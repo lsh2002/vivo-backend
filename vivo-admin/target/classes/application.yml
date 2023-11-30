@@ -1,0 +1,54 @@
+server:
+  port: 8082
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/message_notification?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
+    username: root
+    password: 123456
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+  jackson:
+    #  格式化返回时间 yyyy-MM-dd HH:mm:ss
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    #  返回时间戳
+    serialization:
+      write-dates-as-timestamps: true
+project:
+  security:
+    rsa:
+      private-key: classpath:key/rsa/private.key
+      public-key: classpath:key/rsa/public.key
+    aes:
+      # 44位密钥
+      key: MFykvIB5lRmM+8sbSp6KyTO87U5hArBrL3lYTGzEknY=
+      # 16位向量
+      vi: "c558Gq0YQK2QUlMc"
+  # JWT配置
+  jwt:
+    # 44位密钥
+    secret: JwtSecretKeyJwtSecretKeyJwtSecretKeyJwtSecre
+    subject: DFXY.Lsh
+    # 过期时效-30分钟，单位：毫秒
+    expire-time: 1800000
+    # header中token名
+    header-name: Authorization
+    # header 中token的前缀
+    token-prefix: Bearer
+    # 5min以内则刷新token，单位：分钟
+    refresh-expire-time: 5
+  snowflake:
+    datacenter-id: 1
+    machine-id: 1
+mybatis-flex:
+  mapper-locations:
+    - classpath*:/mapper/*.xml
+schedule:
+  # 每次处理的数据数
+  max-task-size: 1000

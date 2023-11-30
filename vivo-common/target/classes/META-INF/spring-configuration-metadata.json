@@ -1,0 +1,64 @@
+{
+  "groups": [
+    {
+      "name": "project.jwt",
+      "type": "com.lsh.vivo.jwt.JwtProperties",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.security.rsa",
+      "type": "com.lsh.vivo.bean.properties.RsaProperties",
+      "sourceType": "com.lsh.vivo.bean.properties.RsaProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "project.jwt.expire-time",
+      "type": "java.lang.Long",
+      "description": "时效性",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.jwt.header-name",
+      "type": "java.lang.String",
+      "description": "返回header的name",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.jwt.refresh-expire-time",
+      "type": "java.lang.Integer",
+      "description": "token刷新剩余时间",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.jwt.subject",
+      "type": "java.lang.String",
+      "description": "主题",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.jwt.token-prefix",
+      "type": "java.lang.String",
+      "description": "token接收格式前缀",
+      "sourceType": "com.lsh.vivo.jwt.JwtProperties"
+    },
+    {
+      "name": "project.security.rsa.private-key",
+      "type": "java.security.interfaces.RSAPrivateKey",
+      "description": "私钥",
+      "sourceType": "com.lsh.vivo.bean.properties.RsaProperties"
+    },
+    {
+      "name": "project.security.rsa.public-key",
+      "type": "java.security.interfaces.RSAPublicKey",
+      "description": "公钥",
+      "sourceType": "com.lsh.vivo.bean.properties.RsaProperties"
+    }
+  ],
+  "hints": []
+}

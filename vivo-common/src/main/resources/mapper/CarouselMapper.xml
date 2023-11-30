@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsh.vivo.mapper.CarouselMapper">
+
+    <resultMap id="BaseResultMap" type="com.lsh.vivo.entity.Carousel">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="imgPath" column="img_path" jdbcType="VARCHAR"/>
+            <result property="describes" column="describes" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="creatorId" column="creator_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="modifierId" column="modifier_id" jdbcType="VARCHAR"/>
+            <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+</mapper>
