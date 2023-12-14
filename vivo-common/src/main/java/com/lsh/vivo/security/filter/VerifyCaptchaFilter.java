@@ -39,7 +39,7 @@ public class VerifyCaptchaFilter implements Filter {
 
     private static final String CAPTCHA_PARAM_NAME = "verifyCode";
 
-    protected void verifyError(HttpServletResponse httpServletResponse){
+    protected void verifyError(HttpServletResponse httpServletResponse) {
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -55,26 +55,25 @@ public class VerifyCaptchaFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest)servletRequest;
-        if (!CAPTCHA_URL.contains(request.getServletPath())){
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        if (!CAPTCHA_URL.contains(request.getServletPath())) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
         String captcha = request.getParameter(CAPTCHA_PARAM_NAME);
-
-        if (StringUtils.isNotBlank(captcha)){
+        if (StringUtils.isNotBlank(captcha)) {
             CacheManager cacheManager = (CacheManager) ApplicationContextProvider.getBean("cacheManager");
             Cache cache = cacheManager.getCache(GlobalConstant.CACHE_KEY_VERIFY_CODE);
             String ip = IpUtils.getIpAddr(request);
             assert cache != null;
             String inputCaptcha = cache.get(ip, String.class);
-            if (!Objects.equals(inputCaptcha, captcha.toLowerCase())){
+            if (!Objects.equals(inputCaptcha, captcha.toLowerCase())) {
                 captcha = null;
             }
             cache.evict(ip);
         }
-        if (StringUtils.isBlank(captcha)){
-            verifyError((HttpServletResponse)servletResponse);
+        if (StringUtils.isBlank(captcha)) {
+            verifyError((HttpServletResponse) servletResponse);
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

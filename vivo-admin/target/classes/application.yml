@@ -1,5 +1,7 @@
 server:
   port: 8082
+  servlet:
+    context-path: /api
 spring:
   servlet:
     multipart:
@@ -10,9 +12,32 @@ spring:
     username: root
     password: 123456
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
+      # 控制从池返回的连接的默认自动提交行为
+      auto-commit: true
+      # 控制客户端等待池中连接的最长毫秒数,默认 30000（30s），最低设置值250
+      connection-timeout: 60000
+      # 连接允许被闲置在池中的最大时间, 默认600000（10分钟），最小值为10000毫秒（10秒）
       idle-timeout: 600000
+      # 控制池中连接的最大生命周期,默认值为1800000（30分钟），值0表示没有最大生存期
+      max-lifetime: 1800000
+      # 在数据库连接池给出连接之前进行查询，以验证与数据库的连接是否仍然存在且有效。
+      connection-test-query:
+      # 属性控制 HikariCP 尝试在池中维护的最小空闲连接数, 如果minimumIdle未设置则默认为是maximumPoolSize
+      minimum-idle: 3
+      # 控制数据库连接池连接数允许到达的最大值，包括空闲和正在使用的连接
+      maximum-pool-size: 10
+      # 该属性表示连接池的用户定义名称，主要显示在日志记录和JMX管理控制台中，以标识池和池配置。
+      pool-name: message-notify-database-pool
+      # 控制池在初始化失败的时候是否“快速失败”，该值为尝试获取初始连接的毫秒数,小于0的值将绕过任何初始连接尝试，并且池将尝试在后台获取连接时立即启动
+      initialization-fail-timeout: 1
+      # 控制否在自己的事务中隔离内部池查询
+      isolate-internal-queries: false
+      # 此属性控制池是否可以通过JMX挂起和恢复
+      allow-pool-suspension: false
+      # 控制从池中获取的Connections是否处于只读模式
+      read-only: false
+      # 控制连接测试存活的最长时间,默认值：5000（5秒），最低可设置时间250
+      validation-timeout: 5000
   jackson:
     #  格式化返回时间 yyyy-MM-dd HH:mm:ss
     date-format: yyyy-MM-dd HH:mm:ss
@@ -43,9 +68,34 @@ project:
     token-prefix: Bearer
     # 5min以内则刷新token，单位：分钟
     refresh-expire-time: 5
+  # 线程池配置
+  thread-pool:
+    # 核心线程数
+    core-pool-size: 10
+    # 最大线程数
+    maximum-pool-size: 10
+    # 活跃时长
+    keep-alive-time: 5
+    # 活跃时长单位
+    unit: MINUTES
+    # 任务队列上线
+    work-queue-size: 10000000
+  # 雪花算法配置
   snowflake:
+    # 数据中心号
     datacenter-id: 1
+    # 机器号
     machine-id: 1
+  # 内置缓存配置
+  caffeine:
+    # 有效时长
+    expire-after-access: 60
+    # 有效时长单位
+    unit: SECONDS
+    # 初始容量大小
+    initial-capacity: 100
+    # 最大容量大小
+    maximum-size: 1000
 mybatis-flex:
   mapper-locations:
     - classpath*:/mapper/*.xml

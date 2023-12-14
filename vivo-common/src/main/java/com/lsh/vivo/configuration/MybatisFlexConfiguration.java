@@ -1,4 +1,4 @@
-package com.lsh.vivo.config;
+package com.lsh.vivo.configuration;
 
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.handler.CustomSnowflakeIdentifierGenerator;
@@ -51,6 +51,6 @@ public class MybatisFlexConfiguration implements MyBatisFlexCustomizer {
         AuditManager.setAuditEnable(true);
 
         // 设置 SQL 审计收集器
-        AuditManager.setMessageCollector(auditMessage -> log.info("{},return {} 条,{}ms", auditMessage.getFullSql(), auditMessage.getQueryCount(),auditMessage.getElapsedTime()));
+        AuditManager.setMessageCollector(auditMessage -> log.info("{},return {} 条,{}ms", auditMessage.getFullSql(), auditMessage.getQueryCount(), auditMessage.getElapsedTime()));
     }
 }

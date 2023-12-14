@@ -36,7 +36,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username + " 用户不存在");
         }
-
         UserDetail userDetail = BeanCopyUtils.copyBean(user, UserDetail.class);
         if (CollectionUtils.isEmpty(user.getRoles())) {
             return userDetail;

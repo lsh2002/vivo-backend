@@ -1,6 +1,11 @@
 {
   "groups": [
     {
+      "name": "project.caffeine",
+      "type": "com.lsh.vivo.bean.properties.CaffeineProperties",
+      "sourceType": "com.lsh.vivo.bean.properties.CaffeineProperties"
+    },
+    {
       "name": "project.jwt",
       "type": "com.lsh.vivo.jwt.JwtProperties",
       "sourceType": "com.lsh.vivo.jwt.JwtProperties"
@@ -9,9 +14,38 @@
       "name": "project.security.rsa",
       "type": "com.lsh.vivo.bean.properties.RsaProperties",
       "sourceType": "com.lsh.vivo.bean.properties.RsaProperties"
+    },
+    {
+      "name": "project.thread-pool",
+      "type": "com.lsh.vivo.bean.properties.ThreadPoolProperties",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
     }
   ],
   "properties": [
+    {
+      "name": "project.caffeine.expire-after-access",
+      "type": "java.lang.Integer",
+      "description": "过期时间",
+      "sourceType": "com.lsh.vivo.bean.properties.CaffeineProperties"
+    },
+    {
+      "name": "project.caffeine.initial-capacity",
+      "type": "java.lang.Integer",
+      "description": "初始大小",
+      "sourceType": "com.lsh.vivo.bean.properties.CaffeineProperties"
+    },
+    {
+      "name": "project.caffeine.maximum-size",
+      "type": "java.lang.Integer",
+      "description": "最大大小",
+      "sourceType": "com.lsh.vivo.bean.properties.CaffeineProperties"
+    },
+    {
+      "name": "project.caffeine.unit",
+      "type": "java.util.concurrent.TimeUnit",
+      "description": "单位",
+      "sourceType": "com.lsh.vivo.bean.properties.CaffeineProperties"
+    },
     {
       "name": "project.jwt.expire-time",
       "type": "java.lang.Long",
@@ -58,6 +92,42 @@
       "type": "java.security.interfaces.RSAPublicKey",
       "description": "公钥",
       "sourceType": "com.lsh.vivo.bean.properties.RsaProperties"
+    },
+    {
+      "name": "project.thread-pool.core-pool-size",
+      "type": "java.lang.Integer",
+      "description": "核心线程数",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
+    },
+    {
+      "name": "project.thread-pool.keep-alive-time",
+      "type": "java.lang.Integer",
+      "description": "活跃时长",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
+    },
+    {
+      "name": "project.thread-pool.maximum-pool-size",
+      "type": "java.lang.Integer",
+      "description": "最大线程数",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
+    },
+    {
+      "name": "project.thread-pool.thread-prefix-name",
+      "type": "java.lang.String",
+      "description": "线程前缀名",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
+    },
+    {
+      "name": "project.thread-pool.unit",
+      "type": "java.util.concurrent.TimeUnit",
+      "description": "活跃时长单位",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
+    },
+    {
+      "name": "project.thread-pool.work-queue-size",
+      "type": "java.lang.Integer",
+      "description": "队列数",
+      "sourceType": "com.lsh.vivo.bean.properties.ThreadPoolProperties"
     }
   ],
   "hints": []

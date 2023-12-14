@@ -1,4 +1,4 @@
-package com.lsh.vivo.config;
+package com.lsh.vivo.configuration;
 
 
 import com.alibaba.fastjson.JSON;
