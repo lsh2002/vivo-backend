@@ -1,14 +1,12 @@
 server:
   port: 8082
-  servlet:
-    context-path: /api
 spring:
   servlet:
     multipart:
       max-file-size: 2MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/message_notification?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
+    url: jdbc:mysql://localhost:3306/vivo_store?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
     username: root
     password: 123456
     hikari:
@@ -27,7 +25,7 @@ spring:
       # 控制数据库连接池连接数允许到达的最大值，包括空闲和正在使用的连接
       maximum-pool-size: 10
       # 该属性表示连接池的用户定义名称，主要显示在日志记录和JMX管理控制台中，以标识池和池配置。
-      pool-name: message-notify-database-pool
+      pool-name: vivo-database-pool
       # 控制池在初始化失败的时候是否“快速失败”，该值为尝试获取初始连接的毫秒数,小于0的值将绕过任何初始连接尝试，并且池将尝试在后台获取连接时立即启动
       initialization-fail-timeout: 1
       # 控制否在自己的事务中隔离内部池查询
@@ -46,6 +44,11 @@ spring:
     serialization:
       write-dates-as-timestamps: true
 project:
+  root:
+    # 用户名
+    name: admin
+    # 密码
+    pass: 123456
   security:
     rsa:
       private-key: classpath:key/rsa/private.key

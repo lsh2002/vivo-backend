@@ -19,6 +19,11 @@ public class UserTableDef extends TableDef {
     public final QueryColumn ID = new QueryColumn(this, "id");
 
     /**
+     * 是否系统的
+     */
+    public final QueryColumn SYS = new QueryColumn(this, "sys");
+
+    /**
      * 手机号
      */
     public final QueryColumn PHONE = new QueryColumn(this, "phone");
@@ -91,7 +96,7 @@ public class UserTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, PHONE, STATUS, CREATOR, MODIFIER, NICKNAME, PASSWORD, REVISION, USERNAME, CREATOR_ID, CREATE_TIME, MODIFIER_ID, PERM_STATUS, MODIFIED_TIME};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, SYS, PHONE, STATUS, CREATOR, MODIFIER, NICKNAME, PASSWORD, REVISION, USERNAME, CREATOR_ID, CREATE_TIME, MODIFIER_ID, PERM_STATUS, MODIFIED_TIME};
 
     public UserTableDef() {
         super("", "user");

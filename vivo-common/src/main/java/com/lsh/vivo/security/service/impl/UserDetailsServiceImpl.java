@@ -1,11 +1,11 @@
 package com.lsh.vivo.security.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.lsh.vivo.bean.security.UserDetail;
 import com.lsh.vivo.entity.Role;
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.mapper.RoleRelationMapper;
 import com.lsh.vivo.mapper.UserMapper;
-import com.lsh.vivo.util.BeanCopyUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -36,7 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username + " 用户不存在");
         }
-        UserDetail userDetail = BeanCopyUtils.copyBean(user, UserDetail.class);
+        UserDetail userDetail = BeanUtil.copyProperties(user, UserDetail.class);
         if (CollectionUtils.isEmpty(user.getRoles())) {
             return userDetail;
         }

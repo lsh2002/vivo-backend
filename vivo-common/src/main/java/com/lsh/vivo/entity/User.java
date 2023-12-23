@@ -50,6 +50,11 @@ public class User extends BaseEntity implements Serializable, Cloneable {
     private String permStatus;
 
     /**
+     * 是否系统的
+     */
+    private String sys;
+
+    /**
      * 角色
      */
     @RelationManyToMany(

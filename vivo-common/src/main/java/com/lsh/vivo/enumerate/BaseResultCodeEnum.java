@@ -56,7 +56,7 @@ public enum BaseResultCodeEnum {
     /**
      * 验证码错误
      */
-    ERROR_VERIFY_TIMEOUT("E00011", "验证码错误或已失效！") ,
+    ERROR_VERIFY_TIMEOUT("E00011", "验证码错误或已失效！"),
     /**
      * 输入用户名不存在
      */
@@ -88,7 +88,7 @@ public enum BaseResultCodeEnum {
     /**
      * 账户已停用/注销
      */
-    ERROR_ACCOUNT_HALT("E00019", "此账户已停用/注销，无法登录！"),
+    ERROR_ACCOUNT_HALT("E00038", "此账户已停用/注销，无法登录！"),
     /**
      * 用户所绑定角色权限发生变化
      */
@@ -104,7 +104,7 @@ public enum BaseResultCodeEnum {
      */
     private final String message;
 
-    BaseResultCodeEnum(String code, String message){
+    BaseResultCodeEnum(String code, String message) {
         this.code = code;
         this.message = message;
     }

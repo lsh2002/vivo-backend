@@ -5,17 +5,19 @@
 <mapper namespace="com.lsh.vivo.mapper.OrderMapper">
 
     <resultMap id="BaseResultMap" type="com.lsh.vivo.entity.Order">
-            <id property="id" column="id" jdbcType="VARCHAR"/>
-            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
-            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-            <result property="totalPrice" column="total_price" jdbcType="DOUBLE"/>
-            <result property="status" column="status" jdbcType="CHAR"/>
-            <result property="revision" column="revision" jdbcType="INTEGER"/>
-            <result property="creatorId" column="creator_id" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="modifierId" column="modifier_id" jdbcType="VARCHAR"/>
-            <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
-            <result property="courierNumber" column="courier_number" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="totalPrice" column="total_price" jdbcType="DOUBLE"/>
+        <result property="status" column="status" jdbcType="CHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modifier_id" property="modifierId"/>
+        <result column="modifier" property="modifier"/>
+        <result column="modified_time" property="modifiedTime"/>
+        <result property="courierNumber" column="courier_number" jdbcType="VARCHAR"/>
     </resultMap>
 
 </mapper>

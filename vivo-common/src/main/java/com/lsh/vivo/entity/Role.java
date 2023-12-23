@@ -22,10 +22,6 @@ import java.io.Serializable;
         onUpdate = CustomFlexListener.class)
 @Data
 public class Role extends BaseEntity implements Serializable, Cloneable {
-    /**
-     * 主键
-     */
-    private String id;
 
     /**
      * 角色名

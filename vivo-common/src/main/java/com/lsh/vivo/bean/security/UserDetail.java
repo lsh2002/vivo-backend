@@ -23,9 +23,9 @@ public class UserDetail implements UserDetails {
 
     private transient String password;
 
-    private String nickname;
+    private String username;
 
-    private String name;
+    private String nickname;
 
     private String status;
 
@@ -45,7 +45,7 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id;
+        return username;
     }
 
     /**

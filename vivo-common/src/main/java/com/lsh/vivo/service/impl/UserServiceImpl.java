@@ -1,11 +1,12 @@
 package com.lsh.vivo.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.lsh.vivo.bean.constant.GlobalConstant;
 import com.lsh.vivo.bean.response.UserInfoVO;
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.mapper.UserMapper;
 import com.lsh.vivo.service.UserService;
-import com.lsh.vivo.util.BeanCopyUtils;
-import com.lsh.vivo.util.SecurityUtils;
+import com.lsh.vivo.util.OauthContext;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,11 +53,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public UserInfoVO getInfo() {
         // 获取当前用户id
-        String userId = SecurityUtils.getUserId();
+        String userId = (String) OauthContext.get(GlobalConstant.HTTP_USER_ID);
         // 根据用户id查询信息
         User user = getById(userId);
         // 封装成UserInfoVo
-        return BeanCopyUtils.copyBean(user, UserInfoVO.class);
+        return BeanUtil.copyProperties(user, UserInfoVO.class);
     }
 }
 

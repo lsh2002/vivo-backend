@@ -10,9 +10,11 @@
         <result property="roleId" column="role_id" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="CHAR"/>
         <result property="revision" column="revision" jdbcType="INTEGER"/>
-        <result property="creatorId" column="creator_id" jdbcType="VARCHAR"/>
-        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
-        <result property="modifierId" column="modifier_id" jdbcType="VARCHAR"/>
-        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modifier_id" property="modifierId"/>
+        <result column="modifier" property="modifier"/>
+        <result column="modified_time" property="modifiedTime"/>
     </resultMap>
 </mapper>

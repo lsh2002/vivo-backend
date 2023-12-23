@@ -62,7 +62,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
         if (SecurityContextHolder.getContext().getAuthentication() == null && !UnauthenticationUrlEnum.getUrls().contains(request.getServletPath())) {
-            // 判断是不是客户端的token
             String authentication = request.getHeader(jwtUtils.getHeaderName());
             if (StringUtils.isNotBlank(authentication) && authentication.startsWith(jwtUtils.getTokenPrefix())) {
                 String token = authentication.substring(jwtUtils.getTokenPrefix().length()).trim();
@@ -85,7 +84,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                             String newToken = jwtUtils.generateToken(userDetails, ip);
                             response.setHeader(jwtUtils.getHeaderName().toLowerCase(), newToken);
                             userId = userDetails.getId();
-                            userName = userDetails.getName();
+                            userName = userDetails.getUsername();
                             authorityList = userDetails.getAuthorities();
                         } else {
                             // 有效的token，判断用户是否还是I启用状态，并且权限没有发送变更
@@ -111,7 +110,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                         UsernamePasswordAuthenticationToken authToken =
                                 new UsernamePasswordAuthenticationToken(
                                         nickname, null, authorityList);
-
                         request.setAttribute(GlobalConstant.HTTP_USER_ID, userId);
                         request.setAttribute(GlobalConstant.HTTP_USER, userName);
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -122,10 +120,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
     /**
      * 用户被停用或者权限发生变更
      */
-    protected void userRequestNowAllow(HttpServletResponse httpServletResponse, BaseResultCodeEnum resultCode){
+    protected void userRequestNowAllow(HttpServletResponse httpServletResponse, BaseResultCodeEnum resultCode) {
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);

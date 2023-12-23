@@ -96,7 +96,7 @@ public class SecurityConfiguration {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
-                "doc.html", "/favicon.ico", "/v3/api-docs/**", "/webjars/**", "/public/*", "/error"
+                "/public/*", "/error"
         );
     }
 

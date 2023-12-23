@@ -21,15 +21,15 @@ public class AdminLoginController {
      * 登录
      */
     @PostMapping("/login")
-    public Result<Void> login(AdminLoginVO loginVO) {
-        return Result.success();
+    public void login(AdminLoginVO loginVO) {
+
     }
 
     /**
      * 登出
      */
     @PostMapping("/logout")
-    public Result<Void> logout() {
-        return Result.success();
+    public void logout() {
+
     }
 }

@@ -33,4 +33,9 @@ public class AdminLoginVO extends BaseRequest {
      */
     @NotBlank(message = "验证码不能为空！")
     private String verifyCode;
+
+    /**
+     * 来源
+     */
+    private String source;
 }

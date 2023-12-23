@@ -40,10 +40,10 @@ public class JwtUtils {
 
     private volatile byte[] encodeBytes;
 
-    private byte[] getEncodeBytes(){
-        if (encodeBytes == null){
-            synchronized (JwtUtils.class){
-                if (encodeBytes == null){
+    private byte[] getEncodeBytes() {
+        if (encodeBytes == null) {
+            synchronized (JwtUtils.class) {
+                if (encodeBytes == null) {
                     encodeBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
                 }
             }
@@ -66,7 +66,7 @@ public class JwtUtils {
         String authorities = userDetail.getAuthorities() == null ? "" : userDetail.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
         return Jwts.builder().setSubject(jwtProperties.getSubject())
                 .claim(GlobalConstant.HTTP_USER_ID, userDetail.getId())
-                .claim(GlobalConstant.HTTP_USER, userDetail.getName())
+                .claim(GlobalConstant.HTTP_USER, userDetail.getUsername())
                 .claim("nickname", userDetail.getNickname())
                 .claim("authorities", (StringUtils.isNotBlank(authorities) ? GzipUtils.compress(authorities) : ""))
                 .claim(GlobalConstant.HTTP_REQUEST_IP, ip)
@@ -92,10 +92,11 @@ public class JwtUtils {
 
     /**
      * 解析token字符串中的加密信息【加密算法&加密密钥】, 提取所有声明的方法
+     *
      * @param token token值
      * @return
      */
-    public Claims extractAllClaims(String token){
+    public Claims extractAllClaims(String token) {
         try {
             return Jwts
                     .parserBuilder()
@@ -105,8 +106,8 @@ public class JwtUtils {
                     // 解析token字符串
                     .parseClaimsJws(token)
                     .getBody();
-        }catch (Exception e) {
-            if (log.isWarnEnabled()){
+        } catch (Exception e) {
+            if (log.isWarnEnabled()) {
                 log.warn("Valid token=[{}] error!", token, e);
             }
         }
@@ -115,17 +116,18 @@ public class JwtUtils {
 
     /**
      * 获取token中的权限值
+     *
      * @param claims
      * @return
      */
-    public List<String> getAuthorities(Claims claims){
+    public List<String> getAuthorities(Claims claims) {
         String authorities = null;
         try {
             authorities = (String) claims.get("authorities");
             authorities = StringUtils.isNotBlank(authorities) ? GzipUtils.uncompress(authorities) : "";
             return !"".equals(authorities) ? Arrays.stream(authorities.split(",")).toList() : new ArrayList<>();
-        }catch (Exception e) {
-            if (log.isWarnEnabled()){
+        } catch (Exception e) {
+            if (log.isWarnEnabled()) {
                 log.warn("authorities=[{}] error!", authorities, e);
             }
         }
@@ -135,24 +137,27 @@ public class JwtUtils {
 
     /**
      * 获取token中的用户ID
+     *
      * @param claims
      * @return
      */
-    public String getUserId(Claims claims){
-        return (String) claims.get(SecurityUtils.getUserId());
+    public String getUserId(Claims claims) {
+        return (String) claims.get(GlobalConstant.HTTP_USER_ID);
     }
 
     /**
      * 获取token中的用户ID
+     *
      * @param claims
      * @return
      */
-    public String getUserName(Claims claims){
-        return (String) claims.get(SecurityUtils.getUsername());
+    public String getUserName(Claims claims) {
+        return (String) claims.get(GlobalConstant.HTTP_USER);
     }
 
     /**
      * 获取签名密钥的方法
+     *
      * @return 基于指定的密钥字节数组创建用于HMAC-SHA算法的新SecretKey实例
      */
     private Key getSignInKey() {
@@ -162,15 +167,16 @@ public class JwtUtils {
 
     /**
      * 解析token字符串中的权限信息
+     *
      * @param token token值
      * @return
      */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        try{
+        try {
             final Claims claims = extractAllClaims(token);
             return claims == null ? null : claimsResolver.apply(claims);
         } catch (Exception e) {
-            if (log.isWarnEnabled()){
+            if (log.isWarnEnabled()) {
                 log.warn("Verify token [{}] error!!!", token, e);
             }
         }
@@ -179,6 +185,7 @@ public class JwtUtils {
 
     /**
      * 从token中解析出username
+     *
      * @param token token值
      * @return
      */
@@ -188,18 +195,19 @@ public class JwtUtils {
 
     /**
      * 判断token是否过期
+     *
      * @param token token值
      * @return token有效性
      */
     public boolean isTokenValid(String token, String ip) {
         // 从token中获取用户名
         Claims claims = extractAllClaims(token);
-        if (claims == null){
+        if (claims == null) {
             return false;
         }
         String username = extractUsername(token);
         boolean valid = claims.getExpiration() != null && !claims.getExpiration().before(new Date());
-        if (valid){
+        if (valid) {
             String loginIp = (String) claims.get(GlobalConstant.HTTP_REQUEST_IP);
             valid = Objects.equals(ip, loginIp);
         }
@@ -208,6 +216,7 @@ public class JwtUtils {
 
     /**
      * 验证token是否过期
+     *
      * @param token token值
      * @return true-正常， false-过期
      */
@@ -217,6 +226,7 @@ public class JwtUtils {
 
     /**
      * 从授权信息中获取token过期时间
+     *
      * @param token token值
      * @return 过期时间
      */
@@ -226,18 +236,19 @@ public class JwtUtils {
 
     /**
      * 从授权信息中获取token过期时间
+     *
      * @param token token值
      * @return 过期时间
      */
     public String getIp(String token) {
-        return extractClaim(token, claim->claim.get("ip", String.class));
+        return extractClaim(token, claim -> claim.get("ip", String.class));
     }
 
-    public String getHeaderName(){
+    public String getHeaderName() {
         return jwtProperties.getHeaderName();
     }
 
-    public String getTokenPrefix(){
+    public String getTokenPrefix() {
         return jwtProperties.getTokenPrefix();
     }
 
