@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 全局参数
+ *
  * @author ASUS
  */
 @Slf4j
@@ -33,4 +34,9 @@ public class GlobalConstant {
      * 当前用户名
      */
     public static final String HTTP_USER = "USER";
+
+    /**
+     * select(number(1))
+     */
+    public static final String SELECT_NUMBER = "1";
 }

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  *
  * @author AdolphLv
  */
-@RestControllerAdvice(basePackages = "com.foxhis.controller")
+@RestControllerAdvice(basePackages = "com.lsh.vivo.controller")
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
     @InitBinder

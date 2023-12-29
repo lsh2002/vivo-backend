@@ -7,6 +7,7 @@ import com.lsh.vivo.bean.response.role.RoleSelectedVO;
 import com.lsh.vivo.entity.Role;
 import com.lsh.vivo.entity.RoleRelation;
 import com.lsh.vivo.entity.User;
+import com.lsh.vivo.entity.UserRole;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.SystemEnum;
 import com.lsh.vivo.mapper.RoleRelationMapper;
@@ -135,22 +136,16 @@ public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
             if (!exists) {
                 UserSaveVO userSaveVO = new UserSaveVO();
                 userSaveVO.setUsername(rootName);
-                userSaveVO.setMobile("");
+                userSaveVO.setPhone("");
 
                 RoleSelectedVO roleSelectedVO = new RoleSelectedVO();
                 roleSelectedVO.setId(roleId);
                 userSaveVO.setRoles(List.of(roleSelectedVO));
 
-                RSAUtils aesUtils = ApplicationContextProvider.getBean(RSAUtils.class);
                 User user = BeanUtil.copyProperties(userSaveVO, User.class);
                 user.setNickname("超级管理员");
-                user.setPassword(aesUtils.encryption(rootPassword));
-                user.setStatus(CommonStatusEnum.I.name());
+                user.setPassword(rootPassword);
                 user.setSys(SystemEnum.T.name());
-                user.setRevision(1);
-                user.setCreator("系统生成");
-                user.setCreatorId("SYSTEM");
-                user.setCreateTime(LocalDateTime.now());
                 userService.save(user);
             }
         } catch (Exception e) {

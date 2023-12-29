@@ -36,8 +36,8 @@ public class UserSaveVO {
     /**
      * 昵称
      */
-    @NotBlank(message = "用户名不能为空！")
-    @Length(min = 4, max = 12, message = "用户名长度不符")
+    @NotBlank(message = "昵称不能为空！")
+    @Length(min = 4, max = 12, message = "昵称长度不符")
     private String nickname;
 
     /**
@@ -45,12 +45,6 @@ public class UserSaveVO {
      */
     @NotBlank(message = "密码不能为空")
     private String password;
-
-    /**
-     * 重复密码
-     */
-    @NotBlank(message = "重复密码不能为空")
-    private String checkPassword;
 
     /**
      * 角色
@@ -61,6 +55,7 @@ public class UserSaveVO {
     /**
      * 手机号
      */
+    @NotBlank(message = "手机号不能为空！")
     @Mobile(message = "手机号格式不正确！需为11位数字")
-    private String mobile;
+    private String phone;
 }

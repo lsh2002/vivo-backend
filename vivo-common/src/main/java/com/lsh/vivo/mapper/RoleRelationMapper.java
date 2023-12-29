@@ -1,6 +1,7 @@
 package com.lsh.vivo.mapper;
 
 import com.lsh.vivo.entity.RoleRelation;
+import com.lsh.vivo.mapper.system.CommonMapper;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,7 +18,7 @@ import static com.mybatisflex.core.query.QueryMethods.select;
  * @Entity com.lsh.vivo.entity.RoleRelation
  */
 @Mapper
-public interface RoleRelationMapper extends BaseMapper<RoleRelation> {
+public interface RoleRelationMapper extends CommonMapper<RoleRelation> {
 
     /**
      * 查询权限代码

@@ -18,7 +18,6 @@ public class BaseEntityVO extends BaseEntityIdVO {
     /**
      * 乐观锁
      */
-    @NotBlank()
     private Integer revision;
 
     /**

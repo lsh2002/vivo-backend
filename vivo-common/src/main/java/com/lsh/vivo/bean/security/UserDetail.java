@@ -21,7 +21,7 @@ public class UserDetail implements UserDetails {
 
     private String id;
 
-    private transient String password;
+    private String password;
 
     private String username;
 

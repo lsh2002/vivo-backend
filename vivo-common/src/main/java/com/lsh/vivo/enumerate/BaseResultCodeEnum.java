@@ -86,6 +86,26 @@ public enum BaseResultCodeEnum {
      */
     ERROR_UNKNOWN_DATA("E00018", "数据不存在！"),
     /**
+     * 不允许绑定超级管理员
+     */
+    ERROR_ROLE_BINDING("E00019", "不可绑定超级管理员"),
+    /**
+     * 用户昵称已存在
+     */
+    ERROR_USER_NICKNAME_EXIST("E00020", "用户昵称已存在！"),
+    /**
+     * 用户手机号已存在
+     */
+    ERROR_USER_PHONE_EXIST("E00021", "用户手机号已存在！"),
+    /**
+     * 无权修改当前用户绑定角色的权限
+     */
+    ERROR_CHANGE_BINDING_ROLE_PERM("E00022", "不可修改自身绑定角色权限"),
+    /**
+     * 非超级管理员用户不可修改超级管理员信息
+     */
+    ERROR_IDENTITY_OPERATION("E00023", "无权修改超级管理员信息"),
+    /**
      * 账户已停用/注销
      */
     ERROR_ACCOUNT_HALT("E00038", "此账户已停用/注销，无法登录！"),

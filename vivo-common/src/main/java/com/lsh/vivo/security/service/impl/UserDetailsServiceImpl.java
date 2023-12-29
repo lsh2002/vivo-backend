@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         //查询用户信息
-        User user = userMapper.findByNicknameOrPhone(username);
+        User user = userMapper.findByUsernameOrPhone(username);
         if (user == null) {
             throw new UsernameNotFoundException(username + " 用户不存在");
         }

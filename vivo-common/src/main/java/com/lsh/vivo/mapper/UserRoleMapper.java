@@ -1,6 +1,7 @@
 package com.lsh.vivo.mapper;
 
 import com.lsh.vivo.entity.UserRole;
+import com.lsh.vivo.mapper.system.CommonMapper;
 import com.mybatisflex.core.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @Entity com.lsh.vivo.pojo.entity.UserRole
  */
 @Mapper
-public interface UserRoleMapper extends BaseMapper<UserRole> {
+public interface UserRoleMapper extends CommonMapper<UserRole> {
 
 }
 

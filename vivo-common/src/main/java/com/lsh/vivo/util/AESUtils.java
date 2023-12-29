@@ -21,22 +21,9 @@ import java.util.Base64;
  */
 @Slf4j
 @Component
-public class AesUtils {
-
-    /**
-     * 密钥
-     */
-    @Value("${project.security.aes.key}")
-    private String key;
+public class AESUtils {
 
     private static final String AES = "AES";
-
-    /**
-     * 初始向量IV, 初始向量IV的长度规定为128位16个字节, 初始向量的来源为随机生成.
-     */
-    @Value("${project.security.aes.vi}")
-    private String vi;
-
     /**
      * 加密解密算法/加密模式/填充方式
      */
@@ -45,6 +32,17 @@ public class AesUtils {
     static {
         java.security.Security.setProperty("crypto.policy", "unlimited");
     }
+
+    /**
+     * 密钥
+     */
+    @Value("${project.security.aes.key}")
+    private String key;
+    /**
+     * 初始向量IV, 初始向量IV的长度规定为128位16个字节, 初始向量的来源为随机生成.
+     */
+    @Value("${project.security.aes.vi}")
+    private String vi;
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         KeyGenerator generator = KeyGenerator.getInstance(AES);

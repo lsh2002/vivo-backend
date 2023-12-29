@@ -1,6 +1,6 @@
 package com.lsh.vivo.listener;
 
-import com.lsh.vivo.util.AesUtils;
+import com.lsh.vivo.util.AESUtils;
 import com.mybatisflex.annotation.SetListener;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class CustomSecurityListener implements SetListener {
 
     @Resource
-    private AesUtils aesUtils;
+    private AESUtils aesUtils;
 
     @Override
     public Object onSet(Object entity, String property, Object value) {

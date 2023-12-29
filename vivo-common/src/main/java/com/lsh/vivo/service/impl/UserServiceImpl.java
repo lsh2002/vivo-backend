@@ -1,15 +1,27 @@
 package com.lsh.vivo.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.lsh.vivo.bean.constant.GlobalConstant;
-import com.lsh.vivo.bean.response.UserInfoVO;
+import com.lsh.vivo.bean.dto.user.UserConditionDTO;
 import com.lsh.vivo.entity.User;
+import com.lsh.vivo.enumerate.BaseResultCodeEnum;
+import com.lsh.vivo.enumerate.CommonStatusEnum;
+import com.lsh.vivo.event.user.bean.UserSaveEvent;
+import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.UserMapper;
+import com.lsh.vivo.security.provider.CustomPasswordEncoder;
 import com.lsh.vivo.service.UserService;
-import com.lsh.vivo.util.OauthContext;
-import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.lsh.vivo.service.system.impl.CommonServiceImpl;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.If;
+import com.mybatisflex.core.query.QueryMethods;
+import com.mybatisflex.core.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import static com.lsh.vivo.entity.table.UserRoleTableDef.USER_ROLE;
+import static com.lsh.vivo.entity.table.UserTableDef.USER;
+import static com.mybatisflex.core.query.QueryMethods.*;
 
 /**
  * @author ASUS
@@ -18,46 +30,67 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends CommonServiceImpl<UserMapper, User> implements UserService {
+
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final CustomPasswordEncoder customPasswordEncoder;
+
+    @Override
+    public User getByIdWithRelations(String id) {
+        return mapper.selectOneWithRelationsById(id);
+    }
+
+    @Override
+    public Page<User> page(Page<User> page, UserConditionDTO condition) {
+        String status = condition.getStatus() == null ? "" : condition.getStatus().name();
+        QueryWrapper queryWrapper = query()
+                .select(USER.ALL_COLUMNS)
+                .from(USER)
+                .where(USER.USERNAME.likeLeft(condition.getUsername(), If::hasText))
+                .and(USER.NICKNAME.likeLeft(condition.getNickname(), If::hasText))
+                .and(USER.STATUS.eq(status, If::hasText))
+                .orderBy(USER.CREATE_TIME.desc(), USER.ID.desc());
+        if (StringUtils.isNotBlank(condition.getRoleId())) {
+            queryWrapper.and(QueryMethods.exists(
+                            selectOne().from(USER_ROLE).where(USER_ROLE.USER_ID.eq(USER.ID))
+                                    .and(USER_ROLE.ROLE_ID.eq(condition.getRoleId()))
+                    )
+            );
+        }
+        return mapper.paginateWithRelations(page, queryWrapper);
+    }
 
     @Override
     public boolean save(User entity) {
-//        // 校验数据是否存在
-//        existSave(USER.NICKNAME.eq(entity.getNickname()), new AccountExistException());
-//        existSave(USER.EMAIL.eq(entity.getEmail()), new EmailExistException());
-//        if (StringUtils.isNotBlank(entity.getMobile())) {
-//            existSave(USER.MOBILE.eq(entity.getMobile()), new MobileExistException());
-//        }
-//        // 对密码进行rsa解密再aes加密,操作失败返回空字符串-密码不合法
-//        String encodePwd = encoder.encode(entity.getPassword());
-//        if ("".equals(encodePwd)) {
-//            throw new InvalidPasswordException();
-//        }
-//        entity.setAccountErrorCount(0);
-//        entity.setPassword(encodePwd);
-//        return super.save(entity);
-        return false;
-    }
-
-    /**
-     * 检查用户名是否存在
-     *
-     * @param username 用户名
-     * @return true-存在 false-不存在
-     */
-    @Override
-    public boolean findUsernameExist(String username) {
-        return false;
-    }
-
-    @Override
-    public UserInfoVO getInfo() {
-        // 获取当前用户id
-        String userId = (String) OauthContext.get(GlobalConstant.HTTP_USER_ID);
-        // 根据用户id查询信息
-        User user = getById(userId);
-        // 封装成UserInfoVo
-        return BeanUtil.copyProperties(user, UserInfoVO.class);
+        // 校验昵称是否存在
+        String queryName = queryChain().select(number(1))
+                .from(USER)
+                .where(USER.NICKNAME.eq(entity.getNickname()))
+                .limit(1).oneAs(String.class);
+        if (existByCondition(queryName)) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_USER_NICKNAME_EXIST);
+        }
+        // 校验手机号是否存在
+        String queryPhone = queryChain().select(number(1))
+                .from(USER)
+                .where(USER.PHONE.eq(entity.getPhone()))
+                .limit(1).oneAs(String.class);
+        if (existByCondition(queryPhone)) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_USER_PHONE_EXIST);
+        }
+        // aes加密  操作失败返回空字符串-密码不合法
+        String encodePwd = customPasswordEncoder.encode(entity.getPassword());
+        if ("".equals(encodePwd)) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_INVALID_PASSWORD);
+        }
+        entity.setPassword(encodePwd);
+        entity.setStatus(CommonStatusEnum.I.name());
+        // 插入用户，事件监听绑定联系
+        super.save(entity);
+        UserSaveEvent saveEvent = new UserSaveEvent(this);
+        saveEvent.setUser(entity);
+        applicationEventPublisher.publishEvent(saveEvent);
+        return true;
     }
 }
 

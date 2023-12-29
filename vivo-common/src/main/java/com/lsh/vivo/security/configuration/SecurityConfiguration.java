@@ -42,10 +42,8 @@ public class SecurityConfiguration {
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     @Resource
     private TokenAuthenticationFilter tokenAuthenticationFilter;
-
     @Resource
     private VerifyCaptchaFilter verifyCaptchaFilter;
-
     @Resource
     private RequestFilter requestFilter;
 

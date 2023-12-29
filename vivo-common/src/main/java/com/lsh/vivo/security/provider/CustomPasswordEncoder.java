@@ -1,7 +1,7 @@
 package com.lsh.vivo.security.provider;
 
 import com.lsh.vivo.bean.constant.GlobalConstant;
-import com.lsh.vivo.util.AesUtils;
+import com.lsh.vivo.util.AESUtils;
 import com.lsh.vivo.util.RSAUtils;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -21,11 +21,9 @@ import java.util.Objects;
 public class CustomPasswordEncoder implements PasswordEncoder {
 
     private static final String SECURITY_DEFAULT_PASSWORD = "userNotFoundPassword";
-    @Resource
-    private RSAUtils rsaUtils;
 
     @Resource
-    private AesUtils aesUtils;
+    private AESUtils aesUtils;
 
     public CustomPasswordEncoder() {
     }
@@ -40,8 +38,7 @@ public class CustomPasswordEncoder implements PasswordEncoder {
         }
         String encodePassword;
         try {
-            String plainText = rsaUtils.decryption((String) password);
-            encodePassword = aesUtils.encode(plainText);
+            encodePassword = aesUtils.encode((String) password);
         } catch (Exception ignored) {
             encodePassword = GlobalConstant.STRING_EMPTY;
         }
@@ -55,8 +52,7 @@ public class CustomPasswordEncoder implements PasswordEncoder {
         }
         String encodePassword;
         try {
-            String plainText = rsaUtils.decryption((String) password);
-            encodePassword = aesUtils.encode(plainText);
+            encodePassword = aesUtils.encode((String) password);
         } catch (Exception ignored) {
             encodePassword = GlobalConstant.STRING_EMPTY;
         }

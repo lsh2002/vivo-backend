@@ -1,6 +1,9 @@
 package com.lsh.vivo.service.impl;
 
+import com.lsh.vivo.entity.User;
+import com.lsh.vivo.mapper.UserMapper;
 import com.lsh.vivo.service.MallLoginUserService;
+import com.lsh.vivo.service.system.impl.CommonServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class MallLoginUserServiceImpl implements MallLoginUserService {
+public class MallLoginUserServiceImpl extends CommonServiceImpl<UserMapper, User> {
 
 }
 

@@ -70,7 +70,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 if (claims != null) {
                     boolean valid = jwtUtils.isTokenValid(token, ip);
                     if (valid) {
-                        String nickname = claims.get("nickname", String.class);
+                        String username = claims.get(GlobalConstant.HTTP_USER, String.class);
                         // 认证通过且token有效期只剩5min以内的，刷新token
                         Date expiration = claims.getExpiration();
                         // 将 LocalDateTime 对象转换为 LocalLocalDateTimeTime
@@ -80,7 +80,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                         String userName = null;
                         // 检查是否比当前时间早5分钟以内或大于当前时间,是则返回新token
                         if (LocalDateTime.now().plusMinutes(jwtUtils.getRefreshTime()).isAfter(dateTime)) {
-                            UserDetail userDetails = (UserDetail) userDetailsService.loadUserByUsername(nickname);
+                            UserDetail userDetails = (UserDetail) userDetailsService.loadUserByUsername(username);
                             String newToken = jwtUtils.generateToken(userDetails, ip);
                             response.setHeader(jwtUtils.getHeaderName().toLowerCase(), newToken);
                             userId = userDetails.getId();
@@ -109,7 +109,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                         }
                         UsernamePasswordAuthenticationToken authToken =
                                 new UsernamePasswordAuthenticationToken(
-                                        nickname, null, authorityList);
+                                        username, null, authorityList);
                         request.setAttribute(GlobalConstant.HTTP_USER_ID, userId);
                         request.setAttribute(GlobalConstant.HTTP_USER, userName);
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

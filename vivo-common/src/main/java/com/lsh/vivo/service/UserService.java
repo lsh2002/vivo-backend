@@ -1,28 +1,30 @@
 package com.lsh.vivo.service;
 
+import com.lsh.vivo.bean.dto.user.UserConditionDTO;
 import com.lsh.vivo.entity.User;
-import com.lsh.vivo.bean.response.UserInfoVO;
-import com.mybatisflex.core.service.IService;
+import com.lsh.vivo.service.system.CommonService;
+import com.mybatisflex.core.paginate.Page;
 
 /**
  * @author ASUS
  * @description 针对表【user(用户)】的数据库操作Service
  * @createLocalDateTime 2023-10-28 22:52:02application.yml
  */
-public interface UserService extends IService<User> {
+public interface UserService extends CommonService<User> {
 
     /**
-     * 查询用户名是否存在
+     * 根据id查询用户信息，并查询用户角色信息
      *
-     * @param username 用户名
-     * @return
+     * @param id 用户id
+     * @return 用户信息
      */
-    boolean findUsernameExist(String username);
+    User getByIdWithRelations(String id);
 
     /**
-     * 获取用户信息
+     * 分页查询用户信息
      *
-     * @return
+     * @param page             分页对象
+     * @param userConditionDTO 用户条件
      */
-    UserInfoVO getInfo();
+    Page<User> page(Page<User> page, UserConditionDTO userConditionDTO);
 }
