@@ -21,6 +21,13 @@ public interface UserService extends CommonService<User> {
     User getByIdWithRelations(String id);
 
     /**
+     * 根据token里的id查询用户基本信息数据
+     *
+     * @return 用户基本信息
+     */
+    User getBasicInfo();
+
+    /**
      * 分页查询用户信息
      *
      * @param page             分页对象

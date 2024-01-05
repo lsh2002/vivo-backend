@@ -1,6 +1,5 @@
 package com.lsh.vivo.bean.response.system;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

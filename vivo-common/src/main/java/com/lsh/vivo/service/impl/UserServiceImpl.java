@@ -1,5 +1,6 @@
 package com.lsh.vivo.service.impl;
 
+import com.lsh.vivo.bean.constant.GlobalConstant;
 import com.lsh.vivo.bean.dto.user.UserConditionDTO;
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.enumerate.BaseResultCodeEnum;
@@ -10,6 +11,7 @@ import com.lsh.vivo.mapper.UserMapper;
 import com.lsh.vivo.security.provider.CustomPasswordEncoder;
 import com.lsh.vivo.service.UserService;
 import com.lsh.vivo.service.system.impl.CommonServiceImpl;
+import com.lsh.vivo.util.OauthContext;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryMethods;
@@ -38,6 +40,15 @@ public class UserServiceImpl extends CommonServiceImpl<UserMapper, User> impleme
     @Override
     public User getByIdWithRelations(String id) {
         return mapper.selectOneWithRelationsById(id);
+    }
+
+    @Override
+    public User getBasicInfo() {
+        String id = (String) OauthContext.get(GlobalConstant.HTTP_USER_ID);
+        QueryWrapper wrapper = select(USER.ID, USER.USERNAME, USER.NICKNAME, USER.REVISION)
+                .from(USER)
+                .where(USER.ID.eq(id));
+        return mapper.selectOneByQuery(wrapper);
     }
 
     @Override

@@ -106,6 +106,18 @@ public enum BaseResultCodeEnum {
      */
     ERROR_IDENTITY_OPERATION("E00023", "无权修改超级管理员信息"),
     /**
+     * 角色已存在
+     */
+    ERROR_ROLE_NAME_EXIST("E00024", "角色已存在！"),
+    /**
+     * 商品类别已存在
+     */
+    ERROR_GOODS_CATEGORY_EXIST("E00025", "商品类别已存在！"),
+    /**
+     * 商品已存在
+     */
+    ERROR_GOODS_EXIST("E00026", "该商品已存在！"),
+    /**
      * 账户已停用/注销
      */
     ERROR_ACCOUNT_HALT("E00038", "此账户已停用/注销，无法登录！"),

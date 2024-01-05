@@ -39,6 +39,11 @@ public class ShoppingCartTableDef extends TableDef {
     public final QueryColumn CREATOR = new QueryColumn(this, "creator");
 
     /**
+     * 商品id
+     */
+    public final QueryColumn GOODS_ID = new QueryColumn(this, "goods_id");
+
+    /**
      * 更新人
      */
     public final QueryColumn MODIFIER = new QueryColumn(this, "modifier");
@@ -52,11 +57,6 @@ public class ShoppingCartTableDef extends TableDef {
      * 创建人id
      */
     public final QueryColumn CREATOR_ID = new QueryColumn(this, "creator_id");
-
-    /**
-     * 商品id
-     */
-    public final QueryColumn PRODUCT_ID = new QueryColumn(this, "product_id");
 
     /**
      * 创建时间
@@ -81,7 +81,7 @@ public class ShoppingCartTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NUM, STATUS, USER_ID, CREATOR, MODIFIER, REVISION, CREATOR_ID, PRODUCT_ID, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NUM, STATUS, USER_ID, CREATOR, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME};
 
     public ShoppingCartTableDef() {
         super("", "shopping_cart");

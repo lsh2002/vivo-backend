@@ -1,9 +1,9 @@
 //package com.lsh.vivo.controller;
 //
-//import com.lsh.vivo.service.SeckillProductService;
-//import com.lsh.vivo.pojo.SeckillProduct;
+//import com.lsh.vivo.service.SeckillGoodsService;
+//import com.lsh.vivo.pojo.SeckillGoods;
 //import com.lsh.vivo.pojo.SeckillTime;
-//import com.lsh.vivo.vo.SeckillProductVO;
+//import com.lsh.vivo.vo.SeckillGoodsVO;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.data.redis.core.RedisTemplate;
 //import org.springframework.web.bind.annotation.*;
@@ -15,13 +15,13 @@
 // * @since 2023-08-28 19:58
 // */
 //@RestController
-//@RequestMapping("/seckill/product")
+//@RequestMapping("/seckill/goods")
 //@RequiredArgsConstructor
-//public class SeckillProductController {
+//public class SeckillGoodsController {
 //
 //    private final BaseResponse resultMessage;
 //
-//    private final SeckillProductService seckillProductService;
+//    private final SeckillGoodsService seckillGoodsService;
 //
 //    private final RedisTemplate redisTemplate;
 //
@@ -32,9 +32,9 @@
 //     * @return
 //     */
 //    @GetMapping("/time/{timeId}")
-//    public BaseResponse getProduct(@PathVariable String timeId) {
-//        List<SeckillProductVO> seckillProductVOs = seckillProductService.listSeckillProduct(timeId);
-//        resultMessage.success("001", seckillProductVOs);
+//    public BaseResponse getGoods(@PathVariable String timeId) {
+//        List<SeckillGoodsVO> seckillGoodsVOs = seckillGoodsService.listSeckillGoods(timeId);
+//        resultMessage.success("001", seckillGoodsVOs);
 //        return resultMessage;
 //    }
 //
@@ -46,8 +46,8 @@
 //     */
 //    @GetMapping("/{seckillId}")
 //    public BaseResponse getSeckill(@PathVariable String seckillId) throws Exception {
-//        SeckillProductVO seckillProductVo = seckillProductService.getSeckill(seckillId);
-//        resultMessage.success("001", seckillProductVo);
+//        SeckillGoodsVO seckillGoodsVo = seckillGoodsService.getSeckill(seckillId);
+//        resultMessage.success("001", seckillGoodsVo);
 //        return resultMessage;
 //    }
 //
@@ -58,7 +58,7 @@
 //     */
 //    @GetMapping("/time")
 //    public BaseResponse getTime() {
-//        List<SeckillTime> seckillTimes = seckillProductService.listTime();
+//        List<SeckillTime> seckillTimes = seckillGoodsService.listTime();
 //        resultMessage.success("001", seckillTimes);
 //        return resultMessage;
 //    }
@@ -66,12 +66,12 @@
 //    /**
 //     * 添加秒杀商品
 //     *
-//     * @param seckillProduct
+//     * @param seckillGoods
 //     * @return
 //     */
 //    @PostMapping("/")
-//    public BaseResponse addSeckillProduct(@RequestBody SeckillProduct seckillProduct) {
-//        seckillProductService.saveSeckillProduct(seckillProduct);
+//    public BaseResponse addSeckillGoods(@RequestBody SeckillGoods seckillGoods) {
+//        seckillGoodsService.saveSeckillGoods(seckillGoods);
 //        resultMessage.success("001", "添加成功");
 //        return resultMessage;
 //    }
@@ -83,11 +83,11 @@
 //     * @return
 //     */
 //    @PostMapping("/seckill/{seckillId}")
-//    public BaseResponse seckillProduct(@PathVariable String seckillId, @CookieValue("XM_TOKEN") String cookie)
+//    public BaseResponse seckillGoods(@PathVariable String seckillId, @CookieValue("XM_TOKEN") String cookie)
 //            throws Exception {
 //        // 先判断cookie是否存在，和redis校验
 //        Integer userId = (Integer) redisTemplate.opsForHash().get(cookie, "userId");
-//        seckillProductService.seckillProduct(seckillId, userId);
+//        seckillGoodsService.seckillGoods(seckillId, userId);
 //        resultMessage.success("001", "排队中");
 //        return resultMessage;
 //    }

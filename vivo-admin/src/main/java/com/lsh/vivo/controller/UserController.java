@@ -1,19 +1,22 @@
 package com.lsh.vivo.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.lsh.vivo.bean.constant.GlobalConstant;
 import com.lsh.vivo.bean.dto.user.UserConditionDTO;
 import com.lsh.vivo.bean.request.user.UserConditionVO;
 import com.lsh.vivo.bean.request.user.UserSaveVO;
-import com.lsh.vivo.bean.response.UserVO;
+import com.lsh.vivo.bean.request.user.UserStatusVO;
 import com.lsh.vivo.bean.response.role.RoleSelectedVO;
-import com.lsh.vivo.bean.response.system.BasePageVO;
-import com.lsh.vivo.bean.response.user.UserPageVO;
+import com.lsh.vivo.bean.response.system.PageVO;
+import com.lsh.vivo.bean.response.user.UserBasicInfoVO;
+import com.lsh.vivo.bean.response.user.UserVO;
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.enumerate.BaseResultCodeEnum;
 import com.lsh.vivo.enumerate.SystemEnum;
 import com.lsh.vivo.exception.BaseRequestErrorException;
+import com.lsh.vivo.mapper.struct.UserMpp;
 import com.lsh.vivo.service.UserService;
+import com.lsh.vivo.util.OauthContext;
 import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -22,10 +25,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户模块控制器
@@ -52,7 +59,14 @@ public class UserController {
     @GetMapping("/{id}")
     public UserVO getById(@NotNull @Valid @PathVariable("id") String id) {
         User user = userService.getByIdWithRelations(id);
-        return BeanUtil.copyProperties(user, UserVO.class);
+        return UserMpp.INSTANCE.toVO(user);
+    }
+
+    @Operation(summary = "查询用户基本信息", description = "查询用户基本信息,无授权限制")
+    @ApiOperationSupport(order = 2)
+    @GetMapping("/info")
+    public UserBasicInfoVO getBasicInfo() {
+        return getCommonBasicInfo();
     }
 
     @Operation(summary = "获取模块下当前用户有的权限", description = "无授权限制")
@@ -66,13 +80,12 @@ public class UserController {
     @ApiOperationSupport(order = 5)
     @PreAuthorize("hasAuthority('user:view') || hasAuthority('user:*')")
     @GetMapping
-    public UserPageVO listPageable(@NotNull @ParameterObject @Valid UserConditionVO condition) {
+    public PageVO<UserVO> listPageable(@NotNull @ParameterObject @Valid UserConditionVO condition) {
         Page<User> page = new Page<>(condition.getPage(), condition.getSize());
-        UserConditionDTO userConditionDTO = BeanUtil.copyProperties(condition, UserConditionDTO.class);
+        UserConditionDTO userConditionDTO = UserMpp.INSTANCE.toDTO(condition);
         Page<User> userPage = userService.page(page, userConditionDTO);
-        return BeanUtil.copyProperties(userPage, UserPageVO.class);
+        return UserMpp.INSTANCE.toPageVO(userPage);
     }
-
 
     @Operation(summary = "新建用户", description = "授权限控制，user:save - 新建用户权限, user:* - 角色模块全部权限")
     @PreAuthorize("hasAuthority('user:save') || hasAuthority('user:*')")
@@ -80,10 +93,25 @@ public class UserController {
     @PostMapping
     public UserVO save(@RequestBody @Validated UserSaveVO userSaveVO) {
         checkAdmin(userSaveVO.getRoles());
-        User newUser = BeanUtil.copyProperties(userSaveVO, User.class);
+        User newUser = UserMpp.INSTANCE.toUser(userSaveVO);
         newUser.setSys(SystemEnum.F.name());
         userService.save(newUser);
-        return BeanUtil.copyProperties(newUser, UserVO.class);
+        return UserMpp.INSTANCE.toVO(newUser);
+    }
+
+    @Operation(summary = "注销/恢复账号", description = "授权限控制,user:update - 用户状态修改权限 user:* - 用户模块全部权限")
+    @ApiOperationSupport(order = 10)
+    @PreAuthorize("hasAuthority('user:update') || hasAuthority('user:*')")
+    @PutMapping("/status")
+    public UserVO changedStatus(@RequestBody @NotNull @Validated UserStatusVO userStatusVO) {
+        String userId = (String) OauthContext.get(GlobalConstant.HTTP_USER_ID);
+        if (Objects.equals(userId, userStatusVO.getId())) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_ILLEGAL_ACCESS);
+        }
+        User newUser = UserMpp.INSTANCE.toDO(userStatusVO);
+        userService.updateById(newUser);
+        newUser.setRevision(newUser.getRevision() + 1);
+        return UserMpp.INSTANCE.toVO(newUser);
     }
 
     /**
@@ -96,5 +124,22 @@ public class UserController {
                 throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_ROLE_BINDING);
             }
         });
+    }
+
+    /**
+     * 统一获取用户基本信息
+     */
+    private UserBasicInfoVO getCommonBasicInfo() {
+        User user = userService.getBasicInfo();
+        // 页面查看权限后缀
+        String suffix = ":view";
+        String suffixAll = ":*";
+        // 超级管理员需要的请求记录查询权限
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        List<String> perms = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(authority -> (authority.endsWith(suffix) || authority.endsWith(suffixAll)))
+                .toList();
+        return UserMpp.INSTANCE.toInfoVO(user, perms);
     }
 }

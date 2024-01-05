@@ -1,18 +1,18 @@
 //package com.lsh.vivo.service;
 //
 //import com.baomidou.mybatisplus.extension.service.IService;
-//import com.lsh.vivo.pojo.SeckillProduct;
+//import com.lsh.vivo.pojo.SeckillGoods;
 //import com.lsh.vivo.pojo.SeckillTime;
-//import com.lsh.vivo.vo.SeckillProductVO;
+//import com.lsh.vivo.vo.SeckillGoodsVO;
 //
 //import java.util.List;
 //
 ///**
 // * @author lsh
-// * @description 针对表【seckill_product】的数据库操作Service
+// * @description 针对表【goods_seckill】的数据库操作Service
 // * @since 2023-08-11 14:40
 // */
-//public interface SeckillProductService extends IService<SeckillProduct> {
+//public interface SeckillGoodsService extends IService<SeckillGoods> {
 //
 //    /**
 //     * 获取秒杀商品列表
@@ -20,14 +20,14 @@
 //     * @param timeId 秒杀时间
 //     * @return 秒杀商品列表
 //     */
-//    List<SeckillProductVO> listSeckillProduct(String timeId);
+//    List<SeckillGoodsVO> listSeckillGoods(String timeId);
 //
 //    /**
 //     * 新增秒杀商品
 //     *
-//     * @param seckillProduct 秒杀商品
+//     * @param seckillGoods 秒杀商品
 //     */
-//    void saveSeckillProduct(SeckillProduct seckillProduct);
+//    void saveSeckillGoods(SeckillGoods seckillGoods);
 //
 //    /**
 //     * 当前时间及往后7个时间段, 总共8个
@@ -42,14 +42,14 @@
 //     * @param seckillId 秒杀
 //     * @return 秒杀商品
 //     */
-//    SeckillProductVO getSeckill(String seckillId) throws Exception;
+//    SeckillGoodsVO getSeckill(String seckillId) throws Exception;
 //
 //    /**
 //     * 秒杀商品
 //     * @param seckillId 秒杀
 //     * @param userId 用户
 //     */
-//    void seckillProduct(String seckillId, Integer userId) throws Exception;
+//    void seckillGoods(String seckillId, Integer userId) throws Exception;
 //
 //    /**
 //     * 获取秒杀结束时间

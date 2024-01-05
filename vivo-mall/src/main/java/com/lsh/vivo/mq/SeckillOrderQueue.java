@@ -1,6 +1,6 @@
 //package com.lsh.vivo.mq;
 //
-//import com.lsh.vivo.service.SeckillProductService;
+//import com.lsh.vivo.service.SeckillGoodsService;
 //import com.lsh.vivo.constant.RedisKey;
 //import com.rabbitmq.client.Channel;
 //import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@
 //public class SeckillOrderQueue {
 //
 //    private final OrderService orderService;
-//    private final SeckillProductService seckillProductService;
+//    private final SeckillGoodsService seckillGoodsService;
 //    private final StringRedisTemplate stringRedisTemplate;
 //
 //    @RabbitListener(queues = "seckill_order")
@@ -39,7 +39,7 @@
 //        String userId = (String) map.get("userId");
 //        // 存入redis，因为只需要判断是否存在，因此value为多少无所谓
 //        stringRedisTemplate.opsForValue().set(RedisKey.SECKILL_RABBITMQ_ID + correlationId, "1");
-//        Long seckillEndTime = seckillProductService.getEndTime(seckillId);
+//        Long seckillEndTime = seckillGoodsService.getEndTime(seckillId);
 //        stringRedisTemplate.expire(RedisKey.SECKILL_RABBITMQ_ID + correlationId, seckillEndTime - new LocalDateTime().getTime(), TimeUnit.SECONDS); // 设置过期时间
 //
 //        try {

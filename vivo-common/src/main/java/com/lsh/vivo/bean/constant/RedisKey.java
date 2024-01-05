@@ -7,10 +7,10 @@ package com.lsh.vivo.bean.constant;
  * @since 2023-09-09 15:43
  */
 public class RedisKey {
-    public static final String SECKILL_PRODUCT_LIST = "seckill:product:list:";
-    public static final String SECKILL_PRODUCT = "seckill:product:id:";
-    public static final String SECKILL_PRODUCT_STOCK = "seckill:product:stock:id:";
-    public static final String SECKILL_PRODUCT_USER_LIST = "seckill:product:user:list";
+    public static final String SECKILL_PRODUCT_LIST = "seckill:goods:list:";
+    public static final String SECKILL_PRODUCT = "seckill:goods:id:";
+    public static final String SECKILL_PRODUCT_STOCK = "seckill:goods:stock:id:";
+    public static final String SECKILL_PRODUCT_USER_LIST = "seckill:goods:user:list";
     public static final String SECKILL_RABBITMQ_ID = "seckill:rabbitmq:id";
 
     /**

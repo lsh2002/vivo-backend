@@ -7,7 +7,6 @@ import com.lsh.vivo.bean.response.role.RoleSelectedVO;
 import com.lsh.vivo.entity.Role;
 import com.lsh.vivo.entity.RoleRelation;
 import com.lsh.vivo.entity.User;
-import com.lsh.vivo.entity.UserRole;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.SystemEnum;
 import com.lsh.vivo.mapper.RoleRelationMapper;
@@ -17,7 +16,6 @@ import com.lsh.vivo.service.RoleService;
 import com.lsh.vivo.service.UserRoleService;
 import com.lsh.vivo.service.UserService;
 import com.lsh.vivo.util.OauthContext;
-import com.lsh.vivo.util.RSAUtils;
 import com.mybatisflex.core.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -87,7 +85,7 @@ public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
                 roleService.save(superRoot);
                 roleId = superRoot.getId();
             }
-            List<String> functions = new ArrayList<>(List.of("user:*", "role:*", "product:*", "product-cate:*", "product-sku:*", "order:*"));
+            List<String> functions = new ArrayList<>(List.of("user:*", "role:*", "goods:*", "goods-cate:*", "goods-sku:*", "order:*"));
             RoleRelationService roleRelationService = ApplicationContextProvider.getBean(RoleRelationService.class);
             queryWrapper = select(ROLE_RELATION.RELATION_CODE)
                     .from(ROLE_RELATION)

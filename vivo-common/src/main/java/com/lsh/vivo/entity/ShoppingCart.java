@@ -30,7 +30,7 @@ public class ShoppingCart extends BaseEntity implements Serializable, Cloneable 
     /**
      * 商品id
      */
-    private String productId;
+    private String goodsId;
 
     /**
      * 商品数量

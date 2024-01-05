@@ -3,8 +3,6 @@ package com.lsh.vivo.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.lsh.vivo.bean.request.user.UserSaveVO;
 import com.lsh.vivo.bean.request.user.UserUpdateVO;
-import com.lsh.vivo.bean.response.UserVO;
-import com.lsh.vivo.bean.response.system.Result;
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.service.UserService;
 import jakarta.validation.constraints.NotNull;

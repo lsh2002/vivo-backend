@@ -34,13 +34,13 @@
 //    /**
 //     * 添加购物车
 //     *
-//     * @param productId
+//     * @param goodsId
 //     * @param userId
 //     * @return
 //     */
-//    @PostMapping("/product/user/{productId}/{userId}")
-//    public BaseResponse cart(@PathVariable String productId, @PathVariable String userId) {
-//        CartVO cartVo = cartService.saveCart(productId, userId);
+//    @PostMapping("/goods/user/{goodsId}/{userId}")
+//    public BaseResponse cart(@PathVariable String goodsId, @PathVariable String userId) {
+//        CartVO cartVo = cartService.saveCart(goodsId, userId);
 //        if (cartVo != null) {
 //            resultMessage.success("001", "添加购物车成功", cartVo);
 //        } else {

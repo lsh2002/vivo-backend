@@ -4,11 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.lsh.vivo.bean.dto.role.RolePermChangeDTO;
 import com.lsh.vivo.bean.request.role.*;
-import com.lsh.vivo.bean.response.role.RoleVO;
 import com.lsh.vivo.bean.response.role.RoleSelectedVO;
+import com.lsh.vivo.bean.response.role.RoleVO;
 import com.lsh.vivo.entity.Role;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.SystemEnum;
+import com.lsh.vivo.mapper.struct.RoleMpp;
 import com.lsh.vivo.service.RoleRelationService;
 import com.lsh.vivo.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +50,7 @@ public class RoleController {
     @GetMapping("/{id}")
     public RoleVO getById(@NotNull @Valid @PathVariable("id") String id) {
         Role role = roleService.getById(id);
-        return BeanUtil.copyProperties(role, RoleVO.class);
+        return RoleMpp.INSTANCE.toVO(role);
     }
 
     @Operation(summary = "获取模块下当前用户有的权限", description = "获取模块下当前用户有的权限,无授权限制")
@@ -65,7 +66,7 @@ public class RoleController {
     @GetMapping
     public List<RoleVO> list(@NotNull RoleConditionVO condition) {
         List<Role> roles = roleService.list(condition.getName(), condition.getStatus());
-        return BeanUtil.copyToList(roles, RoleVO.class);
+        return RoleMpp.INSTANCE.toVO(roles);
     }
 
     @Operation(summary = "新建角色", description = "授权限控制，role:save - 新建角色权限, role:* - 角色模块全部权限")
@@ -77,7 +78,7 @@ public class RoleController {
         role.setName(roleSaveVO.getName().trim());
         role.setSys(SystemEnum.F.name());
         roleService.save(role);
-        return BeanUtil.copyProperties(role, RoleVO.class);
+        return RoleMpp.INSTANCE.toVO(role);
     }
 
     @Operation(summary = "修改角色名称", description = "授权限控制，role:update - 修改角色名称权限, role:* - 角色模块全部权限")
@@ -89,7 +90,7 @@ public class RoleController {
         Role newRole = BeanUtil.copyProperties(roleUpdateVO, Role.class);
         roleService.updateById(newRole);
         newRole.setRevision(newRole.getRevision() + 1);
-        return BeanUtil.copyProperties(newRole, RoleVO.class);
+        return RoleMpp.INSTANCE.toVO(newRole);
     }
 
     @Operation(summary = "修改角色状态", description = "授权限控制，role:update - 修改角色状态权限, role:* - 角色模块全部权限")
@@ -100,7 +101,7 @@ public class RoleController {
         Role role = BeanUtil.copyProperties(roleStatusVO, Role.class);
         roleService.updateById(role);
         role.setRevision(role.getRevision() + 1);
-        return BeanUtil.copyProperties(role, RoleVO.class);
+        return RoleMpp.INSTANCE.toVO(role);
     }
 
     @Operation(summary = "获取角色名下的绑定的权限信息", description = "按角色id查询，授权限控制，role:view - 获取角色名绑定权限信息权限, role:* - 角色模块全部权限")
@@ -115,10 +116,13 @@ public class RoleController {
     @ApiOperationSupport(order = 30)
     @PreAuthorize("hasAuthority('role:update') || hasAuthority('role:*')")
     @PutMapping("/updatePermissions")
-    public RoleVO updatePermissions(@RequestBody @NotNull @Valid RolePermissionVO rolePermChangeDTO) {
-        RolePermChangeDTO dto = BeanUtil.copyProperties(rolePermChangeDTO, RolePermChangeDTO.class);
+    public RoleVO updatePermissions(@RequestBody @NotNull @Valid RolePermissionVO rolePermChangeVO) {
+        RolePermChangeDTO dto = BeanUtil.copyProperties(rolePermChangeVO, RolePermChangeDTO.class);
         roleRelationService.updatePerms(dto);
-        return BeanUtil.copyProperties(rolePermChangeDTO, RoleVO.class);
+        RoleVO role = new RoleVO();
+        role.setId(rolePermChangeVO.getId());
+        role.setRevision(rolePermChangeVO.getRevision() + 1);
+        return role;
     }
 
     @Operation(summary = "获取角色下拉框数据", description = "不传参数时查询所有状态的角色,传I只查询启用状态角色，不授权限控制")
@@ -126,6 +130,6 @@ public class RoleController {
     @GetMapping("/select")
     public List<RoleSelectedVO> selectList(CommonStatusEnum status) {
         List<Role> roles = roleService.selectList(status);
-        return BeanUtil.copyToList(roles, RoleSelectedVO.class);
+        return RoleMpp.INSTANCE.toSelectVO(roles);
     }
 }

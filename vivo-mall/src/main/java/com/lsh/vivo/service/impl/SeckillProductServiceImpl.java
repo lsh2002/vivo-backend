@@ -2,13 +2,13 @@
 //
 //import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 //import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-//import com.lsh.vivo.service.SeckillProductService;
+//import com.lsh.vivo.service.SeckillGoodsService;
 //import com.lsh.vivo.constant.RedisKey;
-//import com.lsh.vivo.pojo.SeckillProduct;
+//import com.lsh.vivo.pojo.SeckillGoods;
 //import com.lsh.vivo.pojo.SeckillTime;
 //import com.lsh.vivo.enumerate.ExceptionEnum;
 //import com.lsh.vivo.util.BeanUtil;
-//import com.lsh.vivo.vo.SeckillProductVO;
+//import com.lsh.vivo.vo.SeckillGoodsVO;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.amqp.AmqpException;
 //import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -22,13 +22,13 @@
 //
 ///**
 // * @author ASUS
-// * @description 针对表【seckill_product】的数据库操作Service实现
+// * @description 针对表【goods_seckill】的数据库操作Service实现
 // * @createLocalDateTime 2023-08-11 14:40:59
 // */
 //@Service
 //@RequiredArgsConstructor
-//public class SeckillProductServiceImpl extends ServiceImpl<SeckillProductMapper, SeckillProduct>
-//        implements SeckillProductService {
+//public class SeckillGoodsServiceImpl extends ServiceImpl<SeckillGoodsMapper, SeckillGoods>
+//        implements SeckillGoodsService {
 //
 //    private final RedisTemplate redisTemplate;
 //
@@ -41,23 +41,23 @@
 //    private final HashMap<String, Boolean> localOverMap = new HashMap<>();
 //
 //    @Override
-//    public List<SeckillProductVO> listSeckillProduct(String timeId) {
+//    public List<SeckillGoodsVO> listSeckillGoods(String timeId) {
 //        // 先查缓存中是否有列表
-//        List<SeckillProductVO> seckillProductVOS = redisTemplate.opsForList().range(RedisKey.SECKILL_PRODUCT_LIST + timeId, 0, -1);
-//        if (seckillProductVOS != null) {
-//            return seckillProductVOS;
+//        List<SeckillGoodsVO> seckillGoodsVOS = redisTemplate.opsForList().range(RedisKey.SECKILL_PRODUCT_LIST + timeId, 0, -1);
+//        if (seckillGoodsVOS != null) {
+//            return seckillGoodsVOS;
 //        }
 //        // 如果缓存中没有，再从数据库中获取，并添加到缓存
-//        seckillProductVOS = baseMapper.listSeckillProductVos(timeId, new LocalDateTime().getTime());
-//        if (seckillProductVOS == null) {
+//        seckillGoodsVOS = baseMapper.listSeckillGoodsVos(timeId, new LocalDateTime().getTime());
+//        if (seckillGoodsVOS == null) {
 //            // 秒杀商品过期或不存在
 //            throw new XmException(ExceptionEnum.GET_SECKILL_NOT_FOUND);
 //        }
-//        redisTemplate.opsForList().leftPushAll(RedisKey.SECKILL_PRODUCT_LIST + timeId, seckillProductVOS);
+//        redisTemplate.opsForList().leftPushAll(RedisKey.SECKILL_PRODUCT_LIST + timeId, seckillGoodsVOS);
 //        // 设置过期时间
-//        long expireTime = seckillProductVOS.get(0).getEndTime() - new LocalDateTime().getTime();
+//        long expireTime = seckillGoodsVOS.get(0).getEndTime() - new LocalDateTime().getTime();
 //        redisTemplate.expire(RedisKey.SECKILL_PRODUCT_LIST + timeId, expireTime, TimeUnit.MILLISECONDS);
-//        return seckillProductVOS;
+//        return seckillGoodsVOS;
 //    }
 //
 //    /**
@@ -73,7 +73,7 @@
 //    }
 //
 //    @Override
-//    public void saveSeckillProduct(SeckillProduct seckillProduct) {
+//    public void saveSeckillGoods(SeckillGoods seckillGoods) {
 //        LocalDateTime time = getLocalDateTime();
 //        long startTime = time.getTime() / 1000 * 1000 + 1000 * 60 * 60;
 //        long endTime = startTime + 1000 * 60 * 60;
@@ -89,11 +89,11 @@
 //            seckillTime.setStartTime(startTime);
 //            seckillTime.setEndTime(endTime);
 //            seckillTimeMapper.insert(seckillTime);
-//            seckillProduct.setTimeId(seckillTime.getTimeId());
+//            seckillGoods.setTimeId(seckillTime.getTimeId());
 //        } else {
-//            seckillProduct.setTimeId(one.getTimeId());
+//            seckillGoods.setTimeId(one.getTimeId());
 //        }
-//        save(seckillProduct);
+//        save(seckillGoods);
 //    }
 //
 //    @Override
@@ -103,34 +103,34 @@
 //    }
 //
 //    @Override
-//    public SeckillProductVO getSeckill(String seckillId) throws Exception {
+//    public SeckillGoodsVO getSeckill(String seckillId) throws Exception {
 //        // 从缓存中查询
 //        Map map = redisTemplate.opsForHash().entries(RedisKey.SECKILL_PRODUCT + seckillId);
 //        if (!map.isEmpty()) {
-//            return BeanUtil.map2bean(map, SeckillProductVO.class);
+//            return BeanUtil.map2bean(map, SeckillGoodsVO.class);
 //        }
 //        // 缓存中没有再从数据库中查询
-//        SeckillProductVO seckillProductVo = baseMapper.getSeckill(seckillId);
-//        if (seckillProductVo == null) {
+//        SeckillGoodsVO seckillGoodsVo = baseMapper.getSeckill(seckillId);
+//        if (seckillGoodsVo == null) {
 //            return null;
 //        }
 //        // 查询到数据再写入缓存
 //        try {
-//            redisTemplate.opsForHash().putAll(RedisKey.SECKILL_PRODUCT + seckillId, BeanUtil.bean2map(seckillProductVo));
-//            redisTemplate.expire(RedisKey.SECKILL_PRODUCT + seckillId, seckillProductVo.getEndTime() - new LocalDateTime().getTime(), TimeUnit.MILLISECONDS);
+//            redisTemplate.opsForHash().putAll(RedisKey.SECKILL_PRODUCT + seckillId, BeanUtil.bean2map(seckillGoodsVo));
+//            redisTemplate.expire(RedisKey.SECKILL_PRODUCT + seckillId, seckillGoodsVo.getEndTime() - new LocalDateTime().getTime(), TimeUnit.MILLISECONDS);
 //            // 将库存单独存入一个key中
 //            String key = stringRedisTemplate.opsForValue().get(RedisKey.SECKILL_PRODUCT_STOCK + seckillId);
 //            if (key == null) {
-//                stringRedisTemplate.opsForValue().set(RedisKey.SECKILL_PRODUCT_STOCK + seckillId, seckillProductVo.getSeckillStock() + "", seckillProductVo.getEndTime() - new LocalDateTime().getTime(), TimeUnit.MILLISECONDS);
+//                stringRedisTemplate.opsForValue().set(RedisKey.SECKILL_PRODUCT_STOCK + seckillId, seckillGoodsVo.getSeckillStock() + "", seckillGoodsVo.getEndTime() - new LocalDateTime().getTime(), TimeUnit.MILLISECONDS);
 //            }
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-//        return seckillProductVo;
+//        return seckillGoodsVo;
 //    }
 //
 //    @Override
-//    public void seckillProduct(String seckillId, Integer userId) throws Exception {
+//    public void seckillGoods(String seckillId, Integer userId) throws Exception {
 //        if (localOverMap.get(seckillId) != null) {
 //            // 秒杀商品已售空
 //            throw new XmException(ExceptionEnum.GET_SECKILL_IS_OVER);
@@ -138,9 +138,9 @@
 //        // 判断秒杀是否开始, 防止路径暴露被刷
 //        Map map = redisTemplate.opsForHash().entries(RedisKey.SECKILL_PRODUCT + seckillId);
 //        if (!map.isEmpty()) {
-//            SeckillProductVO seckillProductVo = BeanUtil.map2bean(map, SeckillProductVO.class);
+//            SeckillGoodsVO seckillGoodsVo = BeanUtil.map2bean(map, SeckillGoodsVO.class);
 //            // 秒杀开始时间
-//            Long startTime = seckillProductVo.getStartTime();
+//            Long startTime = seckillGoodsVo.getStartTime();
 //            if (startTime > new LocalDateTime().getTime()) {
 //                throw new XmException(ExceptionEnum.GET_SECKILL_IS_NOT_START);
 //            }
@@ -179,7 +179,7 @@
 //    }
 //
 //    public Long getEndTime(String seckillId) {
-//        SeckillProductVO seckill = baseMapper.getSeckill(seckillId);
+//        SeckillGoodsVO seckill = baseMapper.getSeckill(seckillId);
 //        LambdaQueryWrapper<SeckillTime> queryWrapper = new LambdaQueryWrapper<>();
 //        return seckillTimeMapper.selectOne(queryWrapper
 //                .eq(SeckillTime::getTimeId, seckill.getTimeId()))
