@@ -1,6 +1,6 @@
 package com.lsh.vivo.bean.response.goods;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.lsh.vivo.bean.response.system.BaseEntityVO;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +33,7 @@ public class GoodsSkuVO extends BaseEntityVO {
      * 属性
      */
     @Schema(name = "属性", description = "属性")
-    private JSONArray attribute;
+    private JSON attribute;
 
     /**
      * 定价

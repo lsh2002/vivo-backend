@@ -7,7 +7,8 @@ import com.mybatisflex.core.table.TableDef;
 public class GoodsSkuTableDef extends TableDef {
 
     /**
-     * @TableName goods_sku
+     * @author ASUS
+ @TableName goods_sku
      */
     public static final GoodsSkuTableDef GOODS_SKU = new GoodsSkuTableDef();
 
@@ -67,6 +68,11 @@ public class GoodsSkuTableDef extends TableDef {
     public final QueryColumn CREATOR_ID = new QueryColumn(this, "creator_id");
 
     /**
+     * 商品名称
+     */
+    public final QueryColumn GOODS_NAME = new QueryColumn(this, "goods_name");
+
+    /**
      * 创建时间
      */
     public final QueryColumn CREATE_TIME = new QueryColumn(this, "create_time");
@@ -87,16 +93,6 @@ public class GoodsSkuTableDef extends TableDef {
     public final QueryColumn SELLING_PRICE = new QueryColumn(this, "selling_price");
 
     /**
-     * 属性类别
-     */
-    public final QueryColumn ATTRIBUTE_TYPE = new QueryColumn(this, "attribute_type");
-
-    /**
-     * 属性值
-     */
-    public final QueryColumn ATTRIBUTE_VALUE = new QueryColumn(this, "attribute_value");
-
-    /**
      * 所有字段。
      */
     public final QueryColumn ALL_COLUMNS = new QueryColumn(this, "*");
@@ -104,7 +100,7 @@ public class GoodsSkuTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, PRICE, SALES, STOCK, REMARK, STATUS, CREATOR, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME, SELLING_PRICE, ATTRIBUTE_TYPE, ATTRIBUTE_VALUE};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, PRICE, SALES, STOCK, REMARK, STATUS, CREATOR, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, GOODS_NAME, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME, SELLING_PRICE};
 
     public GoodsSkuTableDef() {
         super("", "goods_sku");

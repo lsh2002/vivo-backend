@@ -1,6 +1,5 @@
 package com.lsh.vivo.runner;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.lsh.vivo.bean.constant.GlobalConstant;
 import com.lsh.vivo.bean.request.user.UserSaveVO;
 import com.lsh.vivo.bean.response.role.RoleSelectedVO;
@@ -10,6 +9,7 @@ import com.lsh.vivo.entity.User;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.SystemEnum;
 import com.lsh.vivo.mapper.RoleRelationMapper;
+import com.lsh.vivo.mapper.struct.UserMpp;
 import com.lsh.vivo.provider.ApplicationContextProvider;
 import com.lsh.vivo.service.RoleRelationService;
 import com.lsh.vivo.service.RoleService;
@@ -140,7 +140,7 @@ public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
                 roleSelectedVO.setId(roleId);
                 userSaveVO.setRoles(List.of(roleSelectedVO));
 
-                User user = BeanUtil.copyProperties(userSaveVO, User.class);
+                User user = UserMpp.INSTANCE.toUser(userSaveVO);
                 user.setNickname("超级管理员");
                 user.setPassword(rootPassword);
                 user.setSys(SystemEnum.T.name());

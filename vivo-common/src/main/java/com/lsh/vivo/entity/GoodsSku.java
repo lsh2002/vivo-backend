@@ -1,13 +1,16 @@
 package com.lsh.vivo.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.lsh.vivo.annotation.TableIdPrefix;
 import com.lsh.vivo.entity.system.BaseEntity;
 import com.lsh.vivo.listener.CustomFlexListener;
+import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author ASUS
@@ -35,7 +38,7 @@ public class GoodsSku extends BaseEntity implements Serializable {
     /**
      * 属性
      */
-    private String attribute;
+    private JSON attribute;
 
     /**
      * 定价
@@ -61,6 +64,16 @@ public class GoodsSku extends BaseEntity implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 商品图片
+     */
+    @RelationOneToMany(
+            selfField = "id", targetField = "goodsSkuId",
+            joinSelfColumn = "id", joinTargetColumn = "goodsSku",
+            joinTable = "goods_picture"
+    )
+    private List<GoodsPicture> goodsPictures;
 
     @Override
     public GoodsSku clone() {

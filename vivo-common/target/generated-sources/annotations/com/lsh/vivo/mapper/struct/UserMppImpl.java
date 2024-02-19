@@ -23,8 +23,8 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-05T10:33:32+0800",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.2 (Red Hat, Inc.)"
+    date = "2024-02-19T15:43:10+0800",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class UserMppImpl implements UserMpp {
 

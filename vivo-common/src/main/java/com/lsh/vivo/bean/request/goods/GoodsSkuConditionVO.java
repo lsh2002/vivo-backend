@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 商品查询条件
+ * 商品sku查询条件
  *
  * @author pjw
  * @version 1.0.0
@@ -15,8 +15,8 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Schema(description = "商品查询条件", name = "商品查询条件")
-public class GoodsConditionVO extends PageRequest {
+@Schema(description = "商品sku查询条件", name = "商品sku查询条件")
+public class GoodsSkuConditionVO extends PageRequest {
 
     /**
      * 商品名称
@@ -25,19 +25,7 @@ public class GoodsConditionVO extends PageRequest {
     private String name;
 
     /**
-     * 商品类别id
-     */
-    @Schema(description = "商品类别id")
-    private String categoryId;
-
-    /**
-     * 商品描述
-     */
-    @Schema(description = "商品描述")
-    private String description;
-
-    /**
-     * 启用状态，I:有效，H:无效
+     * 商品状态
      */
     private GoodsStatusEnum status;
 }

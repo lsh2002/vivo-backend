@@ -1,17 +1,14 @@
 package com.lsh.vivo.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.lsh.vivo.bean.dto.goods.GoodsConditionDTO;
-import com.lsh.vivo.bean.request.goods.GoodsConditionVO;
-import com.lsh.vivo.bean.request.goods.GoodsSaveVO;
-import com.lsh.vivo.bean.request.goods.GoodsStatusVO;
-import com.lsh.vivo.bean.request.goods.GoodsUpdateVO;
-import com.lsh.vivo.bean.response.goods.GoodsVO;
+import com.lsh.vivo.bean.request.goods.GoodsSkuConditionVO;
+import com.lsh.vivo.bean.request.goods.sku.GoodsSkuSaveVO;
+import com.lsh.vivo.bean.request.goods.sku.GoodsSkuStatusVO;
+import com.lsh.vivo.bean.request.goods.sku.GoodsSkuUpdateVO;
+import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.system.PageVO;
-import com.lsh.vivo.entity.Goods;
-import com.lsh.vivo.enumerate.GoodsStatusEnum;
-import com.lsh.vivo.mapper.struct.GoodsMpp;
-import com.lsh.vivo.service.GoodsService;
+import com.lsh.vivo.entity.GoodsSku;
+import com.lsh.vivo.mapper.struct.GoodsSkuMpp;
 import com.lsh.vivo.service.GoodsSkuService;
 import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 商品规格模块控制器
+ * 商品Sku模块控制器
  *
  * @author AdolphLv
  * @version 1.0.0
@@ -48,59 +45,57 @@ public class GoodsSkuController {
     @ApiOperationSupport(order = 1)
     @PreAuthorize("hasAuthority('goods-sku:detail') || hasAuthority('goods-sku:*')")
     @GetMapping("/{id}")
-    public GoodsVO getById(@NotNull @Valid @PathVariable("id") String id) {
-        goodsSkuService.getById(id);
-        return GoodsMpp.INSTANCE.toVO(goods);
+    public GoodsSkuVO getById(@NotNull @Valid @PathVariable("id") String id) {
+        GoodsSku goodsSku = goodsSkuService.getById(id);
+        return GoodsSkuMpp.INSTANCE.toVO(goodsSku);
     }
 
     @Operation(summary = "获取模块下当前用户有的权限", description = "获取模块下当前用户有的权限,无授权限制")
     @ApiOperationSupport(order = 5)
     @GetMapping("/per")
     public List<String> getPermissions() {
-        return GoodsService.listPermissions(MODULE_PREFIX);
+        return goodsSkuService.listPermissions(MODULE_PREFIX);
     }
 
     @Operation(summary = "查询商品规格信息", description = "授权限控制，goods-sku:view - 查询商品规格权限, goods-sku:* - 商品模块全部权限")
     @ApiOperationSupport(order = 5)
     @PreAuthorize("hasAuthority('goods-sku:view') || hasAuthority('goods-sku:*')")
     @GetMapping
-    public PageVO<GoodsVO> listPageable(@NotNull GoodsConditionVO condition) {
-        GoodsConditionDTO goodsConditionDTO = GoodsMpp.INSTANCE.toDTO(condition);
-        Page<Goods> page = new Page<>(condition.getPage(), condition.getSize());
-        Page<Goods> goodsPage = GoodsService.page(page, goodsConditionDTO);
-        return GoodsMpp.INSTANCE.toPageVO(goodsPage);
+    public PageVO<GoodsSkuVO> listPageable(@NotNull GoodsSkuConditionVO condition) {
+        Page<GoodsSku> page = new Page<>(condition.getPage(), condition.getSize());
+        Page<GoodsSku> goodsSkuPage = goodsSkuService.page(page, condition.getName(), condition.getStatus());
+        return GoodsSkuMpp.INSTANCE.toPageVO(goodsSkuPage);
     }
 
     @Operation(summary = "新建商品规格", description = "授权限控制，goods-sku:save - 新建商品规格权限, goods-sku:* - 商品规格模块全部权限")
     @ApiOperationSupport(order = 10)
     @PreAuthorize("hasAuthority('goods-sku:save') || hasAuthority('goods-sku:*')")
     @PostMapping
-    public GoodsVO save(@RequestBody @NotNull @Valid GoodsSaveVO goodsSaveVO) {
-        Goods newGoods = GoodsMpp.INSTANCE.toDO(goodsSaveVO);
-        newGoods.setStatus(GoodsStatusEnum.D.name());
-        GoodsService.save(newGoods);
-        return GoodsMpp.INSTANCE.toVO(newGoods);
+    public GoodsSkuVO save(@RequestBody @NotNull @Valid GoodsSkuSaveVO goodsSkuSaveVO) {
+        GoodsSku newGoodsSku = GoodsSkuMpp.INSTANCE.toDO(goodsSkuSaveVO);
+        goodsSkuService.save(newGoodsSku);
+        return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
     }
 
     @Operation(summary = "修改商品规格", description = "授权限控制，goods-sku:update - 修改商品规格权限, goods-sku:* - 商品规格模块全部权限")
     @ApiOperationSupport(order = 15)
     @PreAuthorize("hasAuthority('goods-sku:update') || hasAuthority('goods-sku:*')")
     @PutMapping
-    public GoodsVO updateById(@RequestBody @NotNull @Valid GoodsUpdateVO goodsUpdateVO) {
-        Goods newGoods = GoodsMpp.INSTANCE.toDO(goodsUpdateVO);
-        GoodsService.updateById(newGoods);
-        newGoods.setRevision(newGoods.getRevision() + 1);
-        return GoodsMpp.INSTANCE.toVO(newGoods);
+    public GoodsSkuVO updateById(@RequestBody @NotNull @Valid GoodsSkuUpdateVO goodsSkuUpdateVO) {
+        GoodsSku newGoodsSku = GoodsSkuMpp.INSTANCE.toDO(goodsSkuUpdateVO);
+        goodsSkuService.updateById(newGoodsSku);
+        newGoodsSku.setRevision(newGoodsSku.getRevision() + 1);
+        return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
     }
 
     @Operation(summary = "修改商品规格状态", description = "授权限控制，goods-sku:update - 修改商品规格状态权限, goods-sku:* - 商品规格模块全部权限")
     @ApiOperationSupport(order = 20)
     @PreAuthorize("hasAuthority('goods-sku:update') || hasAuthority('goods-sku:*')")
     @PutMapping("/status")
-    public GoodsVO changeStatus(@RequestBody @NotNull @Valid GoodsStatusVO goodsStatusVO) {
-        Goods newGoods = GoodsMpp.INSTANCE.toDO(goodsStatusVO);
-        GoodsService.updateById(newGoods);
-        newGoods.setRevision(newGoods.getRevision() + 1);
-        return GoodsMpp.INSTANCE.toVO(newGoods);
+    public GoodsSkuVO changeStatus(@RequestBody @NotNull @Valid GoodsSkuStatusVO goodsSkuStatusVO) {
+        GoodsSku newGoodsSku = GoodsSkuMpp.INSTANCE.toDO(goodsSkuStatusVO);
+        goodsSkuService.updateById(newGoodsSku);
+        newGoodsSku.setRevision(newGoodsSku.getRevision() + 1);
+        return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
     }
 }

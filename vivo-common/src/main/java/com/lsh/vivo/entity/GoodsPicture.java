@@ -23,9 +23,9 @@ import java.io.Serializable;
 @Data
 public class GoodsPicture extends BaseEntity implements Serializable, Cloneable {
     /**
-     * 商品id
+     * 商品Skuid
      */
-    private String goodsId;
+    private String goodsSkuId;
 
     /**
      * 图片地址

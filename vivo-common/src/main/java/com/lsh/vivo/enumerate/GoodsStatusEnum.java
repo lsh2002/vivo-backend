@@ -23,7 +23,7 @@ public enum GoodsStatusEnum implements CommonFormEnumParser<GoodsStatusEnum> {
     U("上架"),
 
     /**
-     * 锁定
+     * 下架
      */
     D("下架");
 
