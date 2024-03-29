@@ -60,7 +60,7 @@ public class BaseEntity implements Serializable {
     /**
      * 更新时间
      */
-    private LocalDateTime modifiedTime;
+    private LocalDateTime modifierTime;
 
     @Override
     protected BaseEntity clone() throws CloneNotSupportedException {

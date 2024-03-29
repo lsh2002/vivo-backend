@@ -20,9 +20,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public enum UnauthenticationUrlEnum {
     /**
-     * 验证码
+     * 注册
      */
-    URL_VERIFY_CODE("/public/verifyCode", "验证码"),
+    URL_REGISTER("/register", "注册"),
+    /**
+     * 重置密码
+     */
+    URL_FORGET("/forget", "重置密码"),
     /**
      * 登录
      */
@@ -31,6 +35,11 @@ public enum UnauthenticationUrlEnum {
      * 获取公钥
      */
     URL_PKEY("/public/pkey", "获取公钥"),
+
+    /**
+     * 获取公钥
+     */
+    URL_HOME("/", "主页"),
 
     URL_ERROR("/error", "异常");
 

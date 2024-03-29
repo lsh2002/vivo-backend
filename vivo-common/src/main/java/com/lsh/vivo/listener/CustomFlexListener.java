@@ -62,6 +62,6 @@ public class CustomFlexListener implements InsertListener, UpdateListener {
                 entity.setModifier(user);
             }
         }
-        entity.setModifiedTime(LocalDateTime.now());
+        entity.setModifierTime(LocalDateTime.now());
     }
 }

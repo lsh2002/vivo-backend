@@ -6,7 +6,7 @@ spring:
       max-file-size: 2MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/vivo_store?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
+    url: jdbc:mysql://localhost:3306/vivo_shop?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
     username: root
     password: 123456
     hikari:
@@ -105,3 +105,6 @@ mybatis-flex:
 schedule:
   # 每次处理的数据数
   max-task-size: 1000
+files:
+  upload:
+    path: /products

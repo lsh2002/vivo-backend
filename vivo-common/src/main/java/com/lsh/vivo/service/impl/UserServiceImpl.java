@@ -5,10 +5,11 @@ import com.lsh.vivo.bean.dto.user.UserConditionDTO;
 import com.lsh.vivo.entity.User;
 import com.lsh.vivo.enumerate.BaseResultCodeEnum;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
+import com.lsh.vivo.enumerate.SystemEnum;
 import com.lsh.vivo.event.user.bean.UserSaveEvent;
 import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.UserMapper;
-import com.lsh.vivo.security.provider.CustomPasswordEncoder;
+import com.lsh.vivo.provider.CustomPasswordEncoder;
 import com.lsh.vivo.service.UserService;
 import com.lsh.vivo.service.system.impl.CommonServiceImpl;
 import com.lsh.vivo.util.OauthContext;
@@ -72,30 +73,40 @@ public class UserServiceImpl extends CommonServiceImpl<UserMapper, User> impleme
     }
 
     @Override
+    public boolean updatePass(String userId, String oldPass, String newPass, String checkPass) {
+        boolean exists = queryChain().select(USER.ID)
+                .where(USER.ID.eq(userId))
+                .and(USER.PASSWORD.eq(customPasswordEncoder.encode(oldPass)))
+                .exists();
+        if (!exists) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_USER_PASSWORD_ERROR);
+        }
+        updateChain()
+                .set(USER.PASSWORD, customPasswordEncoder.encode(newPass))
+                .where(USER.ID.eq(userId))
+                .update();
+        return true;
+    }
+
+    @Override
     public boolean save(User entity) {
         // 校验昵称是否存在
         String queryName = queryChain().select(number(1))
                 .from(USER)
-                .where(USER.NICKNAME.eq(entity.getNickname()))
+                .where(USER.NICKNAME.eq(entity.getUsername()))
                 .limit(1).oneAs(String.class);
         if (existByCondition(queryName)) {
-            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_USER_NICKNAME_EXIST);
-        }
-        // 校验手机号是否存在
-        String queryPhone = queryChain().select(number(1))
-                .from(USER)
-                .where(USER.PHONE.eq(entity.getPhone()))
-                .limit(1).oneAs(String.class);
-        if (existByCondition(queryPhone)) {
-            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_USER_PHONE_EXIST);
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_USER_USERNAME_EXIST);
         }
         // aes加密  操作失败返回空字符串-密码不合法
         String encodePwd = customPasswordEncoder.encode(entity.getPassword());
         if ("".equals(encodePwd)) {
             throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_INVALID_PASSWORD);
         }
+        entity.setNickname(entity.getUsername());
         entity.setPassword(encodePwd);
         entity.setStatus(CommonStatusEnum.I.name());
+        entity.setSys(SystemEnum.F.name());
         // 插入用户，事件监听绑定联系
         super.save(entity);
         UserSaveEvent saveEvent = new UserSaveEvent(this);

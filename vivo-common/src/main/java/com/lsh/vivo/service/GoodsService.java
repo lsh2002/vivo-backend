@@ -2,8 +2,11 @@ package com.lsh.vivo.service;
 
 import com.lsh.vivo.bean.dto.goods.GoodsConditionDTO;
 import com.lsh.vivo.entity.Goods;
+import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
 import com.mybatisflex.core.paginate.Page;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -20,4 +23,10 @@ public interface GoodsService extends CommonService<Goods> {
      * @return 分页对象
      */
     Page<Goods> page(Page<Goods> page, GoodsConditionDTO goodsConditionDTO);
+
+    /**
+     * 获取商品下拉菜单
+     * @return
+     */
+    List<Goods> selectList(CommonStatusEnum status);
 }

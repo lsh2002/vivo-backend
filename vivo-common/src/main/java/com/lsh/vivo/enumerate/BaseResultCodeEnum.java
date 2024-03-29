@@ -125,7 +125,18 @@ public enum BaseResultCodeEnum {
      * 用户所绑定角色权限发生变化
      */
     ERROR_USER_BINDING_ROLE_PERM_CHANGE("E00053", "所属权限发生变更，请重新登录！"),
-    ;
+    /**
+     * 商品已存在
+     */
+    ERROR_EXISTED_GOODS_SKU("E00054", "商品已存在！"),
+
+    ERROR_STOCK_COUNT("E00054", "库存数据错误，请重新输入！"),
+
+    ERROR_REGISTER_CHECKPASS("E00055", "重复密码错误，请重新输入！"),
+
+    ERROR_USER_USERNAME_EXIST("E00056", "用户名已存在"),
+
+    ERROR_USER_PASSWORD_ERROR("E00057", "旧密码输入错误");
 
     /**
      * 代码

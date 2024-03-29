@@ -33,4 +33,7 @@ public interface GoodsCategoryService extends CommonService<GoodsCategory> {
      * @return 商品类别下拉菜单
      */
     List<GoodsCategory> selectList(CommonStatusEnum status, GoodsCatLevelEnum level);
+
+
+    List<GoodsCategory> childList(String id);
 }

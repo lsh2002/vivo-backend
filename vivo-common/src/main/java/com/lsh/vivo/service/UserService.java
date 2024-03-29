@@ -34,4 +34,6 @@ public interface UserService extends CommonService<User> {
      * @param userConditionDTO 用户条件
      */
     Page<User> page(Page<User> page, UserConditionDTO userConditionDTO);
+
+    boolean updatePass(String userId, String oldPass, String newPass, String checkPass);
 }

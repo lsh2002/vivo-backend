@@ -60,7 +60,7 @@ public class RoleRelationTableDef extends TableDef {
     /**
      * 更新时间
      */
-    public final QueryColumn MODIFIED_TIME = new QueryColumn(this, "modified_time");
+    public final QueryColumn MODIFIER_TIME = new QueryColumn(this, "modifier_time");
 
     /**
      * 关联代码
@@ -75,7 +75,7 @@ public class RoleRelationTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, ROLE_ID, STATUS, CREATOR, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME, RELATION_CODE};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, ROLE_ID, STATUS, CREATOR, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, MODIFIER_ID, MODIFIER_TIME, RELATION_CODE};
 
     public RoleRelationTableDef() {
         super("", "role_relation");

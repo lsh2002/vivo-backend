@@ -6,6 +6,7 @@ import com.lsh.vivo.bean.request.goods.GoodsUpdateVO;
 import com.lsh.vivo.bean.request.goods.sku.GoodsSkuSaveVO;
 import com.lsh.vivo.bean.request.goods.sku.GoodsSkuStatusVO;
 import com.lsh.vivo.bean.request.goods.sku.GoodsSkuUpdateVO;
+import com.lsh.vivo.bean.request.goods.sku.StockUpdateVO;
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.goods.cat.GoodsCategorySelectVO;
 import com.lsh.vivo.bean.response.system.PageVO;
@@ -40,7 +41,9 @@ public interface GoodsSkuMpp {
      * @return 返回前端交互商品Sku
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifiedTime", source = "modifiedTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "goods.createTime", source = "goods.createTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "goods.modifierTime", source = "goods.modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsSkuVO toVO(GoodsSku goodsSku);
 
     /**
@@ -92,4 +95,9 @@ public interface GoodsSkuMpp {
      * 修改状态转实体
      */
     GoodsSku toDO(GoodsSkuStatusVO goodsSkuStatusVO);
+
+
+    GoodsSku toDO(StockUpdateVO stockUpdateVO);
+
+    List<GoodsSkuVO> toVO(List<GoodsSku> goodsSkus);
 }

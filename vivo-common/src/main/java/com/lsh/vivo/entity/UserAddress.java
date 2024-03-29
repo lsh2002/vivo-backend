@@ -40,6 +40,11 @@ public class UserAddress extends BaseEntity implements Serializable, Cloneable {
      */
     private String address;
 
+    /**
+     * 收货地址
+     */
+    private String isDefault;
+
     @Override
     public UserAddress clone() {
         UserAddress cloneEntity = null;

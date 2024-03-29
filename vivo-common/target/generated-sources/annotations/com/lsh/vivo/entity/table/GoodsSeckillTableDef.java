@@ -77,7 +77,7 @@ public class GoodsSeckillTableDef extends TableDef {
     /**
      * 更新时间
      */
-    public final QueryColumn MODIFIED_TIME = new QueryColumn(this, "modified_time");
+    public final QueryColumn MODIFIER_TIME = new QueryColumn(this, "modifier_time");
 
     /**
      * 秒杀价
@@ -92,7 +92,7 @@ public class GoodsSeckillTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, STATUS, CREATOR, END_TIME, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, START_TIME, CREATE_TIME, MODIFIER_ID, SECKILL_NUM, MODIFIED_TIME, SECKILL_PRICE};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, STATUS, CREATOR, END_TIME, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, START_TIME, CREATE_TIME, MODIFIER_ID, SECKILL_NUM, MODIFIER_TIME, SECKILL_PRICE};
 
     public GoodsSeckillTableDef() {
         super("", "goods_seckill");

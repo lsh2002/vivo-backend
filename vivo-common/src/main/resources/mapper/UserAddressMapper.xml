@@ -11,6 +11,7 @@
         <result property="phone" column="phone" jdbcType="VARCHAR"/>
         <result property="address" column="address" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="CHAR"/>
+        <result property="isDefault" column="is_default" jdbcType="VARCHAR"/>
         <result property="revision" column="revision" jdbcType="INTEGER"/>
         <result column="creator_id" property="creatorId"/>
         <result column="creator" property="creator"/>

@@ -1,10 +1,7 @@
 package com.lsh.vivo.mapper.struct;
 
 import com.lsh.vivo.bean.dto.user.UserConditionDTO;
-import com.lsh.vivo.bean.request.user.UserConditionVO;
-import com.lsh.vivo.bean.request.user.UserSaveVO;
-import com.lsh.vivo.bean.request.user.UserStatusVO;
-import com.lsh.vivo.bean.request.user.UserUpdateVO;
+import com.lsh.vivo.bean.request.user.*;
 import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.bean.response.user.UserBasicInfoVO;
 import com.lsh.vivo.bean.response.user.UserVO;
@@ -48,7 +45,7 @@ public interface UserMpp {
      * @return 返回前端交互用户
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifiedTime", source = "modifiedTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     UserVO toVO(User user);
 
     /**
@@ -106,4 +103,6 @@ public interface UserMpp {
      * @return 前端基本用户信息
      */
     UserBasicInfoVO toInfoVO(User user, List<String> perms);
+
+    User toUser(UserRegisterVO user);
 }

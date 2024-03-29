@@ -9,10 +9,10 @@ import org.apache.ibatis.annotations.Mapper;
 import static com.lsh.vivo.entity.table.UserTableDef.USER;
 
 /**
+ * 针对表【user(用户)】的数据库操作Mapper
+ *
  * @author ASUS
- * @description 针对表【user(用户)】的数据库操作Mapper
- * @createLocalDateTime 2023-10-29 21:03:08
- * @Entity com.lsh.vivo.pojo.entity.User
+ * 2023-10-29 21:03:08
  */
 @Mapper
 public interface UserMapper extends CommonMapper<User> {
@@ -21,7 +21,6 @@ public interface UserMapper extends CommonMapper<User> {
      * 根据账号查询用户
      *
      * @param account 账号
-     * @return
      */
     default User findByUsernameOrPhone(String account) {
         String regex = "^\\d{11}$";

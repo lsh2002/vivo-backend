@@ -30,7 +30,12 @@ public enum CommonStatusEnum implements CommonFormEnumParser<CommonStatusEnum> {
     /**
      * 无效
      */
-    H("无效");
+    H("无效"),
+
+    /**
+     * 删除
+     */
+    T("删除");
 
     /**
      * 描述

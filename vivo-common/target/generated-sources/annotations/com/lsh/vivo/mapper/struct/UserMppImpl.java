@@ -2,6 +2,7 @@ package com.lsh.vivo.mapper.struct;
 
 import com.lsh.vivo.bean.dto.user.UserConditionDTO;
 import com.lsh.vivo.bean.request.user.UserConditionVO;
+import com.lsh.vivo.bean.request.user.UserRegisterVO;
 import com.lsh.vivo.bean.request.user.UserSaveVO;
 import com.lsh.vivo.bean.request.user.UserStatusVO;
 import com.lsh.vivo.bean.request.user.UserUpdateVO;
@@ -23,7 +24,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T15:43:10+0800",
+    date = "2024-03-29T09:25:19+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class UserMppImpl implements UserMpp {
@@ -56,7 +57,7 @@ public class UserMppImpl implements UserMpp {
         UserVO userVO = new UserVO();
 
         userVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( user.getCreateTime() ) );
-        userVO.setModifiedTime( mapperStructTypeConvert.localDateTimeToLong( user.getModifiedTime() ) );
+        userVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( user.getModifierTime() ) );
         userVO.setId( user.getId() );
         userVO.setRevision( user.getRevision() );
         userVO.setCreatorId( user.getCreatorId() );
@@ -176,6 +177,20 @@ public class UserMppImpl implements UserMpp {
         }
 
         return userBasicInfoVO;
+    }
+
+    @Override
+    public User toUser(UserRegisterVO user) {
+        if ( user == null ) {
+            return null;
+        }
+
+        User user1 = new User();
+
+        user1.setUsername( user.getUsername() );
+        user1.setPassword( user.getPassword() );
+
+        return user1;
     }
 
     protected RoleSelectedVO roleToRoleSelectedVO(Role role) {

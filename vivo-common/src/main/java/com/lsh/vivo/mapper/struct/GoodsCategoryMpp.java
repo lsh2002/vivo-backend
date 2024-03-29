@@ -35,7 +35,7 @@ public interface GoodsCategoryMpp {
      * @return 返回前端交互商品类别
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifiedTime", source = "modifiedTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsCategoryVO toVO(GoodsCategory goodsCategory);
 
     /**

@@ -1,14 +1,12 @@
 server:
   port: 8083
-  servlet:
-    context-path: /api
 spring:
   servlet:
     multipart:
       max-file-size: 2MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/message_notification?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
+    url: jdbc:mysql://localhost:3306/vivo_shop?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true
     username: root
     password: 123456
     hikari:
@@ -60,8 +58,8 @@ project:
     # 44位密钥
     secret: JwtSecretKeyJwtSecretKeyJwtSecretKeyJwtSecre
     subject: DFXY.Lsh
-    # 过期时效-30分钟，单位：毫秒
-    expire-time: 1800000
+    # 过期时效-24小时，单位：毫秒
+    expire-time: 86400000
     # header中token名
     header-name: Authorization
     # header 中token的前缀
@@ -102,3 +100,6 @@ mybatis-flex:
 schedule:
   # 每次处理的数据数
   max-task-size: 1000
+files:
+  upload:
+    path: /file

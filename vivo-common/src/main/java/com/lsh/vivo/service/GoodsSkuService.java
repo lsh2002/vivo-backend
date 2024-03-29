@@ -3,8 +3,11 @@ package com.lsh.vivo.service;
 
 import com.lsh.vivo.entity.GoodsSku;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
+import com.lsh.vivo.enumerate.StockStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
 import com.mybatisflex.core.paginate.Page;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -14,12 +17,30 @@ import com.mybatisflex.core.paginate.Page;
 public interface GoodsSkuService extends CommonService<GoodsSku> {
 
     /**
-     * 分页查询
+     * 分页查询（后台）
      *
      * @param page   分页对象
      * @param name   商品名称
      * @param status 商品状态
      * @return 分页对象
      */
-    Page<GoodsSku> page(Page<GoodsSku> page, String name, GoodsStatusEnum status);
+    Page<GoodsSku> page(Page<GoodsSku> page, String name, GoodsStatusEnum status, String memory, String color);
+
+
+    void updateStock(String id, Integer stockChange, StockStatusEnum stockStatus);
+
+    /**
+     * 分页查询（前台）
+     *
+     * @param page   分页对象
+     * @return 分页对象
+     */
+    Page<GoodsSku> page(Page<GoodsSku> page, String keywords, String categoryId);
+
+
+    List<GoodsSku> listByGoodsId(String goodsId);
+
+    String getByAttribute(String color, String memory, String goodsId);
+
+    List<String> getAllAttribute(String goodsId);
 }

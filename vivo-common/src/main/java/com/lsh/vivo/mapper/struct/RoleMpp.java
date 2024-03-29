@@ -36,7 +36,7 @@ public interface RoleMpp {
      * @return 返回前端交互角色
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifiedTime", source = "modifiedTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     RoleVO toVO(Role role);
 
     /**
@@ -54,7 +54,7 @@ public interface RoleMpp {
      * @return 数据库角色
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "longToLocalDateTime")
-    @Mapping(target = "modifiedTime", source = "modifiedTime", qualifiedByName = "longToLocalDateTime")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "longToLocalDateTime")
     Role toDO(RoleVO roleVO);
 
     /**

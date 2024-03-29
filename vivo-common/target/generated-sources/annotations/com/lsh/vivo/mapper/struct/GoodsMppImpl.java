@@ -5,6 +5,7 @@ import com.lsh.vivo.bean.request.goods.GoodsConditionVO;
 import com.lsh.vivo.bean.request.goods.GoodsSaveVO;
 import com.lsh.vivo.bean.request.goods.GoodsStatusVO;
 import com.lsh.vivo.bean.request.goods.GoodsUpdateVO;
+import com.lsh.vivo.bean.response.goods.GoodsSelectVO;
 import com.lsh.vivo.bean.response.goods.GoodsVO;
 import com.lsh.vivo.bean.response.goods.cat.GoodsCategorySelectVO;
 import com.lsh.vivo.bean.response.system.PageResult;
@@ -21,7 +22,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T15:43:09+0800",
+    date = "2024-03-29T09:25:19+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsMppImpl implements GoodsMpp {
@@ -37,7 +38,7 @@ public class GoodsMppImpl implements GoodsMpp {
         GoodsVO goodsVO = new GoodsVO();
 
         goodsVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( goods.getCreateTime() ) );
-        goodsVO.setModifiedTime( mapperStructTypeConvert.localDateTimeToLong( goods.getModifiedTime() ) );
+        goodsVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( goods.getModifierTime() ) );
         goodsVO.setId( goods.getId() );
         goodsVO.setRevision( goods.getRevision() );
         goodsVO.setCreatorId( goods.getCreatorId() );
@@ -53,6 +54,20 @@ public class GoodsMppImpl implements GoodsMpp {
         }
 
         return goodsVO;
+    }
+
+    @Override
+    public List<GoodsSelectVO> toVO(List<Goods> goods) {
+        if ( goods == null ) {
+            return null;
+        }
+
+        List<GoodsSelectVO> list = new ArrayList<GoodsSelectVO>( goods.size() );
+        for ( Goods goods1 : goods ) {
+            list.add( goodsToGoodsSelectVO( goods1 ) );
+        }
+
+        return list;
     }
 
     @Override
@@ -155,6 +170,19 @@ public class GoodsMppImpl implements GoodsMpp {
         }
 
         return goodsConditionDTO;
+    }
+
+    protected GoodsSelectVO goodsToGoodsSelectVO(Goods goods) {
+        if ( goods == null ) {
+            return null;
+        }
+
+        GoodsSelectVO goodsSelectVO = new GoodsSelectVO();
+
+        goodsSelectVO.setId( goods.getId() );
+        goodsSelectVO.setName( goods.getName() );
+
+        return goodsSelectVO;
     }
 
     protected PageResult goodsPageToPageResult(Page<Goods> page) {

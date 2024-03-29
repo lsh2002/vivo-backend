@@ -18,6 +18,11 @@ public class GoodsSkuTableDef extends TableDef {
     public final QueryColumn ID = new QueryColumn(this, "id");
 
     /**
+     * 商品Sku名称
+     */
+    public final QueryColumn NAME = new QueryColumn(this, "name");
+
+    /**
      * 定价
      */
     public final QueryColumn PRICE = new QueryColumn(this, "price");
@@ -63,6 +68,11 @@ public class GoodsSkuTableDef extends TableDef {
     public final QueryColumn REVISION = new QueryColumn(this, "revision");
 
     /**
+     * 属性
+     */
+    public final QueryColumn ATTRIBUTE = new QueryColumn(this, "attribute");
+
+    /**
      * 创建人id
      */
     public final QueryColumn CREATOR_ID = new QueryColumn(this, "creator_id");
@@ -85,7 +95,7 @@ public class GoodsSkuTableDef extends TableDef {
     /**
      * 更新时间
      */
-    public final QueryColumn MODIFIED_TIME = new QueryColumn(this, "modified_time");
+    public final QueryColumn MODIFIER_TIME = new QueryColumn(this, "modifier_time");
 
     /**
      * 售价
@@ -100,7 +110,7 @@ public class GoodsSkuTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, PRICE, SALES, STOCK, REMARK, STATUS, CREATOR, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, GOODS_NAME, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME, SELLING_PRICE};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NAME, PRICE, SALES, STOCK, REMARK, STATUS, CREATOR, GOODS_ID, MODIFIER, REVISION, ATTRIBUTE, CREATOR_ID, GOODS_NAME, CREATE_TIME, MODIFIER_ID, MODIFIER_TIME, SELLING_PRICE};
 
     public GoodsSkuTableDef() {
         super("", "goods_sku");

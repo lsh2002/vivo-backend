@@ -1,8 +1,10 @@
 package com.lsh.vivo.service;
 
 import com.lsh.vivo.entity.Order;
+import com.lsh.vivo.enumerate.OrderStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
-import com.mybatisflex.core.service.IService;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -11,4 +13,12 @@ import com.mybatisflex.core.service.IService;
  */
 public interface OrderService extends CommonService<Order> {
 
+
+    List<Order> listLastOrder(String userId);
+
+    List<Order> listOrder(String userId, String status);
+
+    void updateStatus(List<String> orderIds, OrderStatusEnum orderStatusEnum, Long time);
+
+    int countUnpaid(String userId);
 }

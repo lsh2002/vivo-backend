@@ -1,13 +1,11 @@
 package com.lsh.vivo.controller;
 
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.lsh.vivo.bean.request.goods.GoodsSkuConditionVO;
-import com.lsh.vivo.bean.request.goods.sku.GoodsSkuSaveVO;
-import com.lsh.vivo.bean.request.goods.sku.GoodsSkuStatusVO;
-import com.lsh.vivo.bean.request.goods.sku.GoodsSkuUpdateVO;
+import com.lsh.vivo.bean.request.goods.sku.*;
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.entity.GoodsSku;
+import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.mapper.struct.GoodsSkuMpp;
 import com.lsh.vivo.service.GoodsSkuService;
 import com.mybatisflex.core.paginate.Page;
@@ -63,7 +61,7 @@ public class GoodsSkuController {
     @GetMapping
     public PageVO<GoodsSkuVO> listPageable(@NotNull GoodsSkuConditionVO condition) {
         Page<GoodsSku> page = new Page<>(condition.getPage(), condition.getSize());
-        Page<GoodsSku> goodsSkuPage = goodsSkuService.page(page, condition.getName(), condition.getStatus());
+        Page<GoodsSku> goodsSkuPage = goodsSkuService.page(page, condition.getName(), condition.getStatus(), condition.getMemory(), condition.getColor());
         return GoodsSkuMpp.INSTANCE.toPageVO(goodsSkuPage);
     }
 
@@ -73,6 +71,9 @@ public class GoodsSkuController {
     @PostMapping
     public GoodsSkuVO save(@RequestBody @NotNull @Valid GoodsSkuSaveVO goodsSkuSaveVO) {
         GoodsSku newGoodsSku = GoodsSkuMpp.INSTANCE.toDO(goodsSkuSaveVO);
+        newGoodsSku.setStock(0);
+        newGoodsSku.setSales(0);
+        newGoodsSku.setStatus(GoodsStatusEnum.D.name());
         goodsSkuService.save(newGoodsSku);
         return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
     }
@@ -95,6 +96,17 @@ public class GoodsSkuController {
     public GoodsSkuVO changeStatus(@RequestBody @NotNull @Valid GoodsSkuStatusVO goodsSkuStatusVO) {
         GoodsSku newGoodsSku = GoodsSkuMpp.INSTANCE.toDO(goodsSkuStatusVO);
         goodsSkuService.updateById(newGoodsSku);
+        newGoodsSku.setRevision(newGoodsSku.getRevision() + 1);
+        return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
+    }
+
+    @Operation(summary = "修改商品规格状态", description = "授权限控制，goods-sku:update - 修改商品规格状态权限, goods-sku:* - 商品规格模块全部权限")
+    @ApiOperationSupport(order = 25)
+    @PreAuthorize("hasAuthority('goods-sku:update') || hasAuthority('goods-sku:*')")
+    @PutMapping("/stock")
+    public GoodsSkuVO changeStatus(@RequestBody @NotNull @Valid StockUpdateVO stockUpdateVO) {
+        GoodsSku newGoodsSku = GoodsSkuMpp.INSTANCE.toDO(stockUpdateVO);
+        goodsSkuService.updateStock(stockUpdateVO.getId(), stockUpdateVO.getStockChange(), stockUpdateVO.getStockStatus());
         newGoodsSku.setRevision(newGoodsSku.getRevision() + 1);
         return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
     }

@@ -47,5 +47,5 @@ public class BaseEntityVO extends BaseEntityIdVO {
     /**
      * 更新时间
      */
-    private Long modifiedTime;
+    private Long modifierTime;
 }

@@ -76,7 +76,7 @@ public class GoodsPictureTableDef extends TableDef {
     /**
      * 更新时间
      */
-    public final QueryColumn MODIFIED_TIME = new QueryColumn(this, "modified_time");
+    public final QueryColumn MODIFIER_TIME = new QueryColumn(this, "modifier_time");
 
     /**
      * 所有字段。
@@ -86,7 +86,7 @@ public class GoodsPictureTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, URL, MASTER, STATUS, CREATOR, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, GOODS_SKU_ID, MODIFIER_ID, DESCRIPTION, MODIFIED_TIME};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, URL, MASTER, STATUS, CREATOR, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, GOODS_SKU_ID, MODIFIER_ID, DESCRIPTION, MODIFIER_TIME};
 
     public GoodsPictureTableDef() {
         super("", "goods_picture");

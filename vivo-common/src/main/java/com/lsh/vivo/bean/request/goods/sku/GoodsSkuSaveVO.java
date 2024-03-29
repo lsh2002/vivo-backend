@@ -1,6 +1,5 @@
 package com.lsh.vivo.bean.request.goods.sku;
 
-import com.alibaba.fastjson.JSON;
 import com.lsh.vivo.bean.response.system.BaseVO;
 import com.lsh.vivo.entity.GoodsPicture;
 import lombok.Data;
@@ -16,6 +15,11 @@ import java.util.List;
 public class GoodsSkuSaveVO extends BaseVO {
 
     /**
+     * 商品Sku名称
+     */
+    private String name;
+
+    /**
      * 商品id
      */
     private String goodsId;
@@ -28,7 +32,7 @@ public class GoodsSkuSaveVO extends BaseVO {
     /**
      * 属性
      */
-    private JSON attribute;
+    private String attribute;
 
     /**
      * 定价

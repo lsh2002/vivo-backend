@@ -6,9 +6,11 @@ import com.lsh.vivo.bean.request.goods.GoodsConditionVO;
 import com.lsh.vivo.bean.request.goods.GoodsSaveVO;
 import com.lsh.vivo.bean.request.goods.GoodsStatusVO;
 import com.lsh.vivo.bean.request.goods.GoodsUpdateVO;
+import com.lsh.vivo.bean.response.goods.GoodsSelectVO;
 import com.lsh.vivo.bean.response.goods.GoodsVO;
 import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.entity.Goods;
+import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.mapper.struct.GoodsMpp;
 import com.lsh.vivo.service.GoodsService;
@@ -101,5 +103,14 @@ public class GoodsController {
         goodsService.updateById(newGoods);
         newGoods.setRevision(newGoods.getRevision() + 1);
         return GoodsMpp.INSTANCE.toVO(newGoods);
+    }
+
+    @Operation(summary = "获取商品下拉菜单", description = "授权限控制，goods:view - 查询商品列表权限, goods:* - 商品模块全部权限")
+    @ApiOperationSupport(order = 25)
+    @PreAuthorize("hasAuthority('goods:view') || hasAuthority('goods:*')")
+    @GetMapping("/select")
+    public List<GoodsSelectVO> select(CommonStatusEnum status) {
+        List<Goods> goodsList = goodsService.selectList(status);
+        return GoodsMpp.INSTANCE.toVO(goodsList);
     }
 }

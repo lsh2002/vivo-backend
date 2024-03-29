@@ -62,6 +62,11 @@ public class UserAddressTableDef extends TableDef {
     public final QueryColumn CREATOR_ID = new QueryColumn(this, "creator_id");
 
     /**
+     * 收货地址
+     */
+    public final QueryColumn IS_DEFAULT = new QueryColumn(this, "is_default");
+
+    /**
      * 创建时间
      */
     public final QueryColumn CREATE_TIME = new QueryColumn(this, "create_time");
@@ -74,7 +79,7 @@ public class UserAddressTableDef extends TableDef {
     /**
      * 更新时间
      */
-    public final QueryColumn MODIFIED_TIME = new QueryColumn(this, "modified_time");
+    public final QueryColumn MODIFIER_TIME = new QueryColumn(this, "modifier_time");
 
     /**
      * 所有字段。
@@ -84,7 +89,7 @@ public class UserAddressTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NAME, PHONE, STATUS, USER_ID, ADDRESS, CREATOR, MODIFIER, REVISION, CREATOR_ID, CREATE_TIME, MODIFIER_ID, MODIFIED_TIME};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NAME, PHONE, STATUS, USER_ID, ADDRESS, CREATOR, MODIFIER, REVISION, CREATOR_ID, IS_DEFAULT, CREATE_TIME, MODIFIER_ID, MODIFIER_TIME};
 
     public UserAddressTableDef() {
         super("", "user_address");

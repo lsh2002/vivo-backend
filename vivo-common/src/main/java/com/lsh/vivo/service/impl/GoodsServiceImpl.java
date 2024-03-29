@@ -3,6 +3,7 @@ package com.lsh.vivo.service.impl;
 import com.lsh.vivo.bean.dto.goods.GoodsConditionDTO;
 import com.lsh.vivo.entity.Goods;
 import com.lsh.vivo.enumerate.BaseResultCodeEnum;
+import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.GoodsMapper;
 import com.lsh.vivo.service.GoodsService;
@@ -11,6 +12,8 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.If;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.lsh.vivo.entity.table.GoodsTableDef.GOODS;
 import static com.mybatisflex.core.query.QueryMethods.number;
@@ -33,6 +36,16 @@ public class GoodsServiceImpl extends CommonServiceImpl<GoodsMapper, Goods>
                 .and(GOODS.STATUS.eq(goodsConditionDTO.getStatus(), If::hasText))
                 .orderBy(GOODS.CREATE_TIME.desc(), GOODS.ID.desc())
                 .page(page);
+    }
+
+    @Override
+    public List<Goods> selectList(CommonStatusEnum statusEnum) {
+        String status = statusEnum == null ? "" : statusEnum.name();
+        return queryChain().select(GOODS.ID, GOODS.NAME)
+                .from(GOODS)
+                .where(GOODS.STATUS.eq(status, If::hasText))
+                .and(GOODS.STATUS.ne(CommonStatusEnum.T.name(), StringUtils.isBlank(status)))
+                .list();
     }
 
     @Override

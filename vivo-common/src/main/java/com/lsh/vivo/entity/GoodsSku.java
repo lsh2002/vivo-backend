@@ -1,9 +1,9 @@
 package com.lsh.vivo.entity;
 
-import com.alibaba.fastjson.JSON;
 import com.lsh.vivo.annotation.TableIdPrefix;
 import com.lsh.vivo.entity.system.BaseEntity;
 import com.lsh.vivo.listener.CustomFlexListener;
+import com.mybatisflex.annotation.RelationManyToOne;
 import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.annotation.Table;
 import lombok.Data;
@@ -26,6 +26,11 @@ import java.util.List;
 public class GoodsSku extends BaseEntity implements Serializable {
 
     /**
+     * 商品Sku名称
+     */
+    private String name;
+
+    /**
      * 商品id
      */
     private String goodsId;
@@ -38,7 +43,7 @@ public class GoodsSku extends BaseEntity implements Serializable {
     /**
      * 属性
      */
-    private JSON attribute;
+    private String attribute;
 
     /**
      * 定价
@@ -66,12 +71,20 @@ public class GoodsSku extends BaseEntity implements Serializable {
     private String remark;
 
     /**
+     * 商品
+     */
+    @RelationManyToOne(
+            selfField = "goodsId", targetField = "id",
+            joinTargetColumn = "id"
+    )
+    private Goods goods;
+
+    /**
      * 商品图片
      */
     @RelationOneToMany(
             selfField = "id", targetField = "goodsSkuId",
-            joinSelfColumn = "id", joinTargetColumn = "goodsSku",
-            joinTable = "goods_picture"
+            selectColumns = {"url"}
     )
     private List<GoodsPicture> goodsPictures;
 

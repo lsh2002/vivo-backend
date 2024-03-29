@@ -18,7 +18,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T15:43:10+0800",
+    date = "2024-03-29T09:25:19+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsCategoryMppImpl implements GoodsCategoryMpp {
@@ -34,7 +34,7 @@ public class GoodsCategoryMppImpl implements GoodsCategoryMpp {
         GoodsCategoryVO goodsCategoryVO = new GoodsCategoryVO();
 
         goodsCategoryVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( goodsCategory.getCreateTime() ) );
-        goodsCategoryVO.setModifiedTime( mapperStructTypeConvert.localDateTimeToLong( goodsCategory.getModifiedTime() ) );
+        goodsCategoryVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( goodsCategory.getModifierTime() ) );
         goodsCategoryVO.setId( goodsCategory.getId() );
         goodsCategoryVO.setRevision( goodsCategory.getRevision() );
         goodsCategoryVO.setCreatorId( goodsCategory.getCreatorId() );

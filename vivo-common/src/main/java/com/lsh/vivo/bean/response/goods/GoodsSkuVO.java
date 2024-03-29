@@ -1,11 +1,13 @@
 package com.lsh.vivo.bean.response.goods;
 
-import com.alibaba.fastjson.JSON;
 import com.lsh.vivo.bean.response.system.BaseEntityVO;
+import com.lsh.vivo.entity.GoodsPicture;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * 商品SKU信息
@@ -16,6 +18,12 @@ import lombok.EqualsAndHashCode;
 @Data
 @Schema(name = "商品SKU信息")
 public class GoodsSkuVO extends BaseEntityVO {
+
+    /**
+     * 商品Sku名称
+     */
+    @Schema(name = "商品Sku名称", description = "商品Sku名称")
+    private String name;
 
     /**
      * 商品id
@@ -33,7 +41,7 @@ public class GoodsSkuVO extends BaseEntityVO {
      * 属性
      */
     @Schema(name = "属性", description = "属性")
-    private JSON attribute;
+    private String attribute;
 
     /**
      * 定价
@@ -69,4 +77,14 @@ public class GoodsSkuVO extends BaseEntityVO {
      * 商品状态
      */
     private GoodsStatusEnum status;
+
+    /**
+     * 商品图片
+     */
+    private List<GoodsPicture> goodsPictures;
+
+    /**
+     * 商品图片
+     */
+    private GoodsVO goods;
 }

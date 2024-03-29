@@ -16,7 +16,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T15:43:10+0800",
+    date = "2024-03-29T09:25:19+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class RoleMppImpl implements RoleMpp {
@@ -32,7 +32,7 @@ public class RoleMppImpl implements RoleMpp {
         RoleVO roleVO = new RoleVO();
 
         roleVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( role.getCreateTime() ) );
-        roleVO.setModifiedTime( mapperStructTypeConvert.localDateTimeToLong( role.getModifiedTime() ) );
+        roleVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( role.getModifierTime() ) );
         roleVO.setId( role.getId() );
         roleVO.setRevision( role.getRevision() );
         roleVO.setCreatorId( role.getCreatorId() );
@@ -73,7 +73,7 @@ public class RoleMppImpl implements RoleMpp {
         Role role = new Role();
 
         role.setCreateTime( mapperStructTypeConvert.longToLocalDateTime( roleVO.getCreateTime() ) );
-        role.setModifiedTime( mapperStructTypeConvert.longToLocalDateTime( roleVO.getModifiedTime() ) );
+        role.setModifierTime( mapperStructTypeConvert.longToLocalDateTime( roleVO.getModifierTime() ) );
         role.setId( roleVO.getId() );
         if ( roleVO.getStatus() != null ) {
             role.setStatus( roleVO.getStatus().name() );

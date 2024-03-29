@@ -5,6 +5,7 @@ import com.lsh.vivo.bean.request.goods.GoodsConditionVO;
 import com.lsh.vivo.bean.request.goods.GoodsSaveVO;
 import com.lsh.vivo.bean.request.goods.GoodsStatusVO;
 import com.lsh.vivo.bean.request.goods.GoodsUpdateVO;
+import com.lsh.vivo.bean.response.goods.GoodsSelectVO;
 import com.lsh.vivo.bean.response.goods.GoodsVO;
 import com.lsh.vivo.bean.response.goods.cat.GoodsCategorySelectVO;
 import com.lsh.vivo.bean.response.system.PageVO;
@@ -38,8 +39,18 @@ public interface GoodsMpp {
      * @return 返回前端交互商品
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifiedTime", source = "modifiedTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsVO toVO(Goods goods);
+
+    /**
+     * 转前端交互商品
+     *
+     * @param goods 商品
+     * @return 返回前端交互商品
+     */
+    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
+    List<GoodsSelectVO> toVO(List<Goods> goods);
 
     /**
      * 转前端交互商品集
