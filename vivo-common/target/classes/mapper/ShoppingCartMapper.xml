@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.lsh.vivo.entity.ShoppingCart">
         <id property="id" column="id" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-        <result property="goodsId" column="goods_id" jdbcType="VARCHAR"/>
+        <result property="skuId" column="sku_id" jdbcType="VARCHAR"/>
         <result property="num" column="num" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="CHAR"/>
         <result property="revision" column="revision" jdbcType="INTEGER"/>
@@ -20,7 +20,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,goods_id,
+        id,user_id,sku_id,
         num,status,revision,
         creator_id,create_time,modifier_id,
         modified_time
