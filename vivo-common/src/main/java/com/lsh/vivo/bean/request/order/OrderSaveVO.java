@@ -52,4 +52,7 @@ public class OrderSaveVO extends BaseRequest {
      * 付款时间
      */
     private Long payTime;
+
+
+    private boolean cart;
 }

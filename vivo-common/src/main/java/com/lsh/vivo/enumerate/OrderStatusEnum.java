@@ -31,7 +31,6 @@ public enum OrderStatusEnum implements CommonFormEnumParser<OrderStatusEnum> {
     C("已取消"),
 
     T("删除"),
-
     ;
 
     /**

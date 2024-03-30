@@ -1,9 +1,12 @@
 package com.lsh.vivo.service;
 
+import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
 import com.lsh.vivo.entity.Order;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
+import com.mybatisflex.core.paginate.Page;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,4 +24,8 @@ public interface OrderService extends CommonService<Order> {
     void updateStatus(List<String> orderIds, OrderStatusEnum orderStatusEnum, Long time);
 
     int countUnpaid(String userId);
+
+    boolean saveBatch(Collection<Order> entities, boolean cart);
+
+    Page<Order> page(Page<Order> page, OrderConditionDTO orderConditionDTO);
 }

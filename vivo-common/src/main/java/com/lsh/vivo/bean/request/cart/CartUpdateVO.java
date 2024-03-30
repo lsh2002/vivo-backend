@@ -1,6 +1,6 @@
 package com.lsh.vivo.bean.request.cart;
 
-import com.lsh.vivo.bean.request.system.BaseRequest;
+import com.lsh.vivo.bean.response.system.BaseUpdateVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CartUpdateVO extends BaseRequest {
+public class CartUpdateVO extends BaseUpdateVO {
 
     /**
      * 用户id

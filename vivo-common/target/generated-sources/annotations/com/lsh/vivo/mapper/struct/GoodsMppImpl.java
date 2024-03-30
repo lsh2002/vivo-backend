@@ -22,7 +22,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-29T09:25:19+0800",
+    date = "2024-03-29T17:08:24+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsMppImpl implements GoodsMpp {

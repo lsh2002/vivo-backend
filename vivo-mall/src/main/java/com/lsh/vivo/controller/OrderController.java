@@ -42,8 +42,9 @@ public class OrderController {
 
     @PostMapping
     public List<OrderVO> saveOrder(@NotEmpty @RequestBody List<OrderSaveVO> orderSaveVOs) {
+        boolean cart = orderSaveVOs.get(0).isCart();
         List<Order> newOrders = OrderMpp.INSTANCE.toDO(orderSaveVOs);
-        boolean saveSuccess = orderService.saveBatch(newOrders);
+        boolean saveSuccess = orderService.saveBatch(newOrders, cart);
         if (!saveSuccess) {
             throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR);
         }
