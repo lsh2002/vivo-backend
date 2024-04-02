@@ -1,5 +1,6 @@
 package com.lsh.vivo.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
 import com.lsh.vivo.entity.Order;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
@@ -28,4 +29,10 @@ public interface OrderService extends CommonService<Order> {
     boolean saveBatch(Collection<Order> entities, boolean cart);
 
     Page<Order> page(Page<Order> page, OrderConditionDTO orderConditionDTO);
+
+    JSONObject getTodayData();
+
+    JSONObject getMonthData();
+
+    JSONObject getYearData();
 }

@@ -49,9 +49,9 @@ public class OrderSaveVO extends BaseRequest {
     private Double price;
 
     /**
-     * 付款时间
+     * 下单时间
      */
-    private Long payTime;
+    private Long orderTime;
 
 
     private boolean cart;

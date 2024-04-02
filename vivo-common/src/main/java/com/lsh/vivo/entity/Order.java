@@ -65,6 +65,11 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
     private Double price;
 
     /**
+     * 下单时间
+     */
+    private LocalDateTime orderTime;
+
+    /**
      * 付款时间
      */
     private LocalDateTime payTime;

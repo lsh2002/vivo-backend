@@ -6,7 +6,8 @@
 
     <resultMap id="BaseResultMap" type="com.lsh.vivo.entity.GoodsSeckill">
         <id property="id" column="id" jdbcType="VARCHAR"/>
-        <result property="goodsId" column="goods_id" jdbcType="VARCHAR"/>
+        <result property="skuId" column="sku_id" jdbcType="VARCHAR"/>
+        <result property="skuName" column="sku_name" jdbcType="VARCHAR"/>
         <result property="seckillPrice" column="seckill_price" jdbcType="DOUBLE"/>
         <result property="seckillNum" column="seckill_num" jdbcType="INTEGER"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>

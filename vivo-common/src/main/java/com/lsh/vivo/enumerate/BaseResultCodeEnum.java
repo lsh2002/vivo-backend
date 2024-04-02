@@ -136,7 +136,10 @@ public enum BaseResultCodeEnum {
 
     ERROR_USER_USERNAME_EXIST("E00056", "用户名已存在"),
 
-    ERROR_USER_PASSWORD_ERROR("E00057", "旧密码输入错误");
+    ERROR_USER_PASSWORD_ERROR("E00057", "旧密码输入错误"),
+
+    ERROR_EXISTED_GOODS_SECKILL("E00058", "秒杀商品已存在"),
+    ;
 
     /**
      * 代码

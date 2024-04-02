@@ -3,6 +3,7 @@ package com.lsh.vivo.entity;
 import com.lsh.vivo.annotation.TableIdPrefix;
 import com.lsh.vivo.entity.system.BaseEntity;
 import com.lsh.vivo.listener.CustomFlexListener;
+import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +28,8 @@ public class GoodsSeckill extends BaseEntity implements Serializable, Cloneable 
     /**
      * 商品id
      */
-    private String goodsId;
+    private String skuId;
+    private String skuName;
 
     /**
      * 秒杀价
@@ -48,6 +50,16 @@ public class GoodsSeckill extends BaseEntity implements Serializable, Cloneable 
      * 结束时间
      */
     private LocalDateTime endTime;
+
+
+    /**
+     * 商品
+     */
+    @RelationOneToOne(
+            selfField = "skuId", targetField = "id",
+            joinTargetColumn = "id"
+    )
+    private GoodsSku goodsSku;
 
     @Override
     public GoodsSeckill clone() {

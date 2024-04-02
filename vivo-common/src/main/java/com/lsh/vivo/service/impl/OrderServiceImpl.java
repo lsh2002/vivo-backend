@@ -1,7 +1,9 @@
 package com.lsh.vivo.service.impl;
 
 import cn.hutool.core.date.DateTime;
+import com.alibaba.fastjson.JSONObject;
 import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
+import com.lsh.vivo.bean.dto.order.OrderDataDTO;
 import com.lsh.vivo.entity.Order;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
@@ -22,12 +24,15 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static com.lsh.vivo.entity.table.GoodsSkuTableDef.GOODS_SKU;
 import static com.lsh.vivo.entity.table.OrderTableDef.ORDER;
-import static com.mybatisflex.core.query.QueryMethods.select;
+import static com.mybatisflex.core.query.QueryMethods.*;
 
 /**
  * @author ASUS
@@ -77,6 +82,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateStatus(List<String> orderIds, OrderStatusEnum orderStatusEnum, Long time) {
         String status = orderStatusEnum == null ? "" : orderStatusEnum.name();
         updateChain()
@@ -87,6 +93,19 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .where(ORDER.ORDER_ID.in(orderIds))
                 .and(ORDER.STATUS.ne(status, If::hasText))
                 .update();
+
+        List<Order> list = queryChain().select(ORDER.SKU_ID, ORDER.NUM)
+                .where(ORDER.ORDER_ID.in(orderIds))
+                .list();
+        if (OrderStatusEnum.F.name().equals(status)) {
+            list.forEach(order -> {
+                 goodsSkuService.updateChain()
+                        .set(GOODS_SKU.SALES, GOODS_SKU.SALES.add(order.getNum()))
+                        .where(GOODS_SKU.ID.eq(order.getSkuId()))
+                        .update();
+            });
+        }
+
     }
 
     @Override
@@ -135,6 +154,175 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .and(ORDER.STATUS.ne(CommonStatusEnum.T.name()))
                 .orderBy(ORDER.PAY_TIME.desc())
                 .page(page);
+    }
+
+    @Override
+    public JSONObject getTodayData() {
+        JSONObject result = new JSONObject();
+        // 查询今天的记录
+        LocalDateTime start = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
+
+        // 今日订单数
+        long count = queryChain()
+                .select(ORDER.ORDER_ID)
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start, end))
+                .count();
+        result.put("count", Optional.of(count));
+        // 昨日订单数
+        long ycount = queryChain()
+                .select(sum(ORDER.ORDER_ID))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start.minusDays(1), end.minusDays(1)))
+                .count();
+        if (ycount != 0) {
+            double number = (double) (count - ycount) / ycount * 100;
+            // 保留2位小数
+            result.put("countThany", Math.round(number * 100) / 100.0);
+        }
+
+        // 今日成交额
+        Double gmv = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start, end))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        result.put("gmv", gmv);
+        // 昨日成交额
+        Double ygmv = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start.minusDays(1), end.minusDays(1)))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        if (ygmv != 0) {
+            double number = (gmv - ygmv) / ygmv * 100;
+            result.put("gmvThany", Math.round(number * 100) / 100.0);
+        }
+
+        // 今日销售额
+        Double gms = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start, end))
+                .and(ORDER.STATUS.ne(OrderStatusEnum.C.name()))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        result.put("gms", gms);
+        // 昨日销售额
+        Double ygms = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start.minusDays(1), end.minusDays(1)))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        if (ygms != 0) {
+            double number = (gms - ygms) / ygms * 100;
+            result.put("gmsThany", Math.round(number * 100) / 100.0);
+        }
+
+        // 待发货数
+        long dfs = queryChain()
+                .select(ORDER.ORDER_ID)
+                .from(ORDER)
+                .and(ORDER.STATUS.eq(OrderStatusEnum.S.name()))
+                .count();
+        result.put("dfs", Optional.of(dfs));
+        return result;
+    }
+
+    @Override
+    public JSONObject getMonthData() {
+        JSONObject result = new JSONObject();
+        // 查询本月的记录
+        LocalDateTime start = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime end = LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).withHour(23).withMinute(59).withSecond(59);
+
+        // 本月订单数
+        long count = queryChain()
+                .select(ORDER.ORDER_ID)
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start, end))
+                .count();
+        result.put("count", Optional.of(count));
+        // 上月订单数
+        long lcount = queryChain()
+                .select(sum(ORDER.ORDER_ID))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start.minusMonths(1), end.minusMonths(1)))
+                .count();
+        if (lcount != 0L) {
+            double number = (double) ((count - lcount) / lcount * 100);
+            result.put("countThanl", Math.round(number * 100) / 100.0);
+        }
+
+        // 本月成交额
+        Double gmv = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start, end))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        result.put("gmv", gmv);
+        // 上月成交额
+        Double lgmv = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start.minusMonths(1), end.minusMonths(1)))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        if (lgmv != 0D) {
+            double number = (gmv - lgmv) / lgmv * 100;
+            result.put("gmvThanl", Math.round(number * 100) / 100.0);
+        }
+
+        // 本月销售额
+        Double gms = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start, end))
+                .and(ORDER.STATUS.ne(OrderStatusEnum.C.name()))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        result.put("gms", gms);
+        // 上月销售额
+        Double lgms = queryChain()
+                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .from(ORDER)
+                .where(ORDER.PAY_TIME.between(start.minusMonths(1), end.minusMonths(1)))
+                .oneAsOpt(Double.class)
+                .orElse((double) 0);
+        if (lgms != 0D) {
+            double number = (gms - lgms) / lgms * 100;
+            result.put("gmsThany", Math.round(number * 100) / 100.0);
+        }
+        return result;
+    }
+
+    @Override
+    public JSONObject getYearData() {
+        JSONObject result = new JSONObject();
+        // 获取每个月的销售额
+        List<OrderDataDTO> orderDataDTOS1 = queryChain()
+                .select(month(ORDER.FINISH_TIME).as("month"), sum(ORDER.NUM.multiply(ORDER.PRICE)).as("sum"))
+                .from(ORDER)
+                .where(ORDER.FINISH_TIME.between(LocalDateTime.now().withDayOfYear(1).withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withDayOfYear(LocalDate.now().lengthOfYear()).withHour(23).withMinute(59).withSecond(59)))
+                .and(ORDER.STATUS.eq(OrderStatusEnum.F.name()))
+                .groupBy(ORDER.FINISH_TIME)
+                .listAs(OrderDataDTO.class);
+        result.put("gms", orderDataDTOS1);
+
+        // 获取每个月的成交额
+        List<OrderDataDTO> orderDataDTOS2 = queryChain()
+                .select(month(ORDER.ORDER_TIME).as("month"), sum(ORDER.NUM.multiply(ORDER.PRICE)).as("sum"))
+                .from(ORDER)
+                .where(ORDER.ORDER_TIME.between(LocalDateTime.now().withDayOfYear(1).withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withDayOfYear(LocalDate.now().lengthOfYear()).withHour(23).withMinute(59).withSecond(59)))
+                .groupBy(ORDER.ORDER_TIME)
+                .listAs(OrderDataDTO.class);
+        result.put("gmv", orderDataDTOS2);
+        return result;
     }
 }
 

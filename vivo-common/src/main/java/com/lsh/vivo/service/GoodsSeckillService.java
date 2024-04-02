@@ -1,7 +1,9 @@
 package com.lsh.vivo.service;
 
 import com.lsh.vivo.entity.GoodsSeckill;
+import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
+import com.mybatisflex.core.paginate.Page;
 
 /**
  * @author ASUS
@@ -10,4 +12,5 @@ import com.lsh.vivo.service.system.CommonService;
  */
 public interface GoodsSeckillService extends CommonService<GoodsSeckill> {
 
+    Page<GoodsSeckill> page(Page<GoodsSeckill> page, String name, GoodsStatusEnum status, Long startTime, Long endTime);
 }

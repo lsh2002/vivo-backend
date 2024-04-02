@@ -110,4 +110,16 @@ public class GoodsSkuController {
         newGoodsSku.setRevision(newGoodsSku.getRevision() + 1);
         return GoodsSkuMpp.INSTANCE.toVO(newGoodsSku);
     }
+
+    @GetMapping("/select")
+    public List<GoodsSkuVO> listSelect(@NotNull GoodsStatusEnum status) {
+        List<GoodsSku> goodsSkus = goodsSkuService.listSelect(status);
+        return GoodsSkuMpp.INSTANCE.toVO(goodsSkus);
+    }
+
+    @GetMapping("/statistics")
+    public List<GoodsSkuVO> listStatistics() {
+        List<GoodsSku> goodsSkus = goodsSkuService.listStatistics();
+        return GoodsSkuMpp.INSTANCE.toVO(goodsSkus);
+    }
 }

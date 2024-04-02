@@ -2,10 +2,7 @@ package com.lsh.vivo.service.impl;
 
 import com.lsh.vivo.entity.GoodsPicture;
 import com.lsh.vivo.entity.GoodsSku;
-import com.lsh.vivo.enumerate.BaseResultCodeEnum;
-import com.lsh.vivo.enumerate.GoodsPictureEnum;
-import com.lsh.vivo.enumerate.GoodsStatusEnum;
-import com.lsh.vivo.enumerate.StockStatusEnum;
+import com.lsh.vivo.enumerate.*;
 import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.GoodsSkuMapper;
 import com.lsh.vivo.service.GoodsPictureService;
@@ -24,7 +21,7 @@ import java.util.List;
 
 import static com.lsh.vivo.entity.table.GoodsSkuTableDef.GOODS_SKU;
 import static com.lsh.vivo.entity.table.GoodsTableDef.GOODS;
-import static com.mybatisflex.core.query.QueryMethods.distinct;
+import static com.mybatisflex.core.query.QueryMethods.*;
 
 /**
  * @author ASUS
@@ -91,6 +88,24 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
                 .and(GOODS_SKU.GOODS_ID.eq(goodsId))
                 .and(GOODS_SKU.STATUS.eq(GoodsStatusEnum.U.name()))
                 .listAs(String.class);
+    }
+
+    @Override
+    public List<GoodsSku> listSelect(GoodsStatusEnum statusEnum) {
+        String status = statusEnum == null ? null : statusEnum.name();
+        return queryChain()
+                .where(GOODS_SKU.STATUS.eq(status, If::hasText))
+                .and(GOODS_SKU.STATUS.ne(GoodsStatusEnum.D.name(), StringUtils.isBlank(status)))
+                .and(GOODS_SKU.STATUS.ne(CommonStatusEnum.T.name(), StringUtils.isBlank(status)))
+                .list();
+    }
+
+    @Override
+    public List<GoodsSku> listStatistics() {
+        QueryWrapper queryWrapper = select(GOODS_SKU.GOODS_NAME, sum(GOODS_SKU.SALES).as("sales"))
+                .groupBy(GOODS_SKU.GOODS_NAME);
+        return mapper.selectListByQuery(queryWrapper);
+
     }
 
     @Override

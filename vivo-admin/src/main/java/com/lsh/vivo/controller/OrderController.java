@@ -1,5 +1,6 @@
 package com.lsh.vivo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
 import com.lsh.vivo.bean.request.order.OrderConditionVO;
@@ -74,5 +75,20 @@ public class OrderController {
     public void updateById(@NotNull @RequestBody OrderUpdateVO orderUpdateVO) {
         Order newOrder = OrderMpp.INSTANCE.toDO(orderUpdateVO);
         orderService.updateById(newOrder);
+    }
+
+    @GetMapping("/today")
+    public JSONObject getTodayData() {
+        return orderService.getTodayData();
+    }
+
+    @GetMapping("/month")
+    public JSONObject getMonthData() {
+        return orderService.getMonthData();
+    }
+
+    @GetMapping("/year")
+    public JSONObject getYearData() {
+        return orderService.getYearData();
     }
 }

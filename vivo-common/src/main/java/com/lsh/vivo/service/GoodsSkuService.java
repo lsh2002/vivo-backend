@@ -43,4 +43,9 @@ public interface GoodsSkuService extends CommonService<GoodsSku> {
     String getByAttribute(String color, String memory, String goodsId);
 
     List<String> getAllAttribute(String goodsId);
+
+    List<GoodsSku> listSelect(GoodsStatusEnum status);
+
+    List<GoodsSku> listStatistics();
+
 }

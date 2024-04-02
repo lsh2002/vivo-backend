@@ -55,6 +55,11 @@ public class OrderVO extends BaseEntityVO {
     private Double price;
 
     /**
+     * 下单时间
+     */
+    private Long orderTime;
+
+    /**
      * 付款时间
      */
     private Long payTime;

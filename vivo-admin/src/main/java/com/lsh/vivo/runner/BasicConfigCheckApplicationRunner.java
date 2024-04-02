@@ -85,7 +85,7 @@ public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
                 roleService.save(superRoot);
                 roleId = superRoot.getId();
             }
-            List<String> functions = new ArrayList<>(List.of("user:*", "role:*", "goods:*", "goods-cate:*", "goods-sku:*", "order:*"));
+            List<String> functions = new ArrayList<>(List.of("user:*", "role:*", "goods:*", "goods-cate:*", "goods-sku:*", "order:*", "goods-seckill:*"));
             RoleRelationService roleRelationService = ApplicationContextProvider.getBean(RoleRelationService.class);
             queryWrapper = select(ROLE_RELATION.RELATION_CODE)
                     .from(ROLE_RELATION)
