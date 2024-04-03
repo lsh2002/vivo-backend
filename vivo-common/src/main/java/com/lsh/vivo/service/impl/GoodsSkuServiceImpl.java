@@ -5,6 +5,7 @@ import com.lsh.vivo.entity.GoodsSku;
 import com.lsh.vivo.enumerate.*;
 import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.GoodsSkuMapper;
+import com.lsh.vivo.service.GoodsCategoryService;
 import com.lsh.vivo.service.GoodsPictureService;
 import com.lsh.vivo.service.GoodsSkuService;
 import com.lsh.vivo.service.system.impl.CommonServiceImpl;
@@ -34,6 +35,7 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
         implements GoodsSkuService {
 
     private final GoodsPictureService goodsPictureService;
+    private final GoodsCategoryService goodsCategoryService;
 
     @Override
     public Page<GoodsSku> page(Page<GoodsSku> page, String name, GoodsStatusEnum statusEnum, String memory, String color) {

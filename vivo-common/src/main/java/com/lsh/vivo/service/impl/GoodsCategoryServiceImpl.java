@@ -56,7 +56,6 @@ public class GoodsCategoryServiceImpl extends CommonServiceImpl<GoodsCategoryMap
         return queryChain().select(GOODS_CATEGORY.ID, GOODS_CATEGORY.NAME, GOODS_CATEGORY.LEVEL)
                 .and(GOODS_CATEGORY.STATUS.ne(CommonStatusEnum.T.name()))
                 .and(GOODS_CATEGORY.PARENT_ID.eq(id, If::hasText))
-                .and(GOODS_CATEGORY.ID.eq(id, StringUtils.isBlank(id)))
                 .list();
     }
 

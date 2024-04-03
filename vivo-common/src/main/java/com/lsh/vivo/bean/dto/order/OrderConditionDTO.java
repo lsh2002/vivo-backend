@@ -1,6 +1,5 @@
 package com.lsh.vivo.bean.dto.order;
 
-import com.lsh.vivo.enumerate.OrderStatusEnum;
 import lombok.Data;
 
 /**
@@ -22,5 +21,7 @@ public class OrderConditionDTO {
 
     private String courierNumber;
 
-    private OrderStatusEnum status;
+    private String status;
+
+    private String serviceTypeEnum;
 }

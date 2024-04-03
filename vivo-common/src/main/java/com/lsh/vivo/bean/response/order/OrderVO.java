@@ -3,6 +3,7 @@ package com.lsh.vivo.bean.response.order;
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.system.BaseEntityVO;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
+import com.lsh.vivo.enumerate.ServiceTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -28,6 +29,11 @@ public class OrderVO extends BaseEntityVO {
      * sku id
      */
     private String skuId;
+
+    /**
+     * sku id
+     */
+    private ServiceTypeEnum serviceType;
 
     /**
      * 收货人姓名
@@ -58,6 +64,8 @@ public class OrderVO extends BaseEntityVO {
      * 下单时间
      */
     private Long orderTime;
+
+    private Long serviceTime;
 
     /**
      * 付款时间

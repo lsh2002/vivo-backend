@@ -2,6 +2,7 @@ package com.lsh.vivo.controller;
 
 import com.lsh.vivo.bean.request.order.OrderSaveVO;
 import com.lsh.vivo.bean.request.order.OrderStatusVO;
+import com.lsh.vivo.bean.request.order.OrderTypeVO;
 import com.lsh.vivo.bean.response.order.OrderVO;
 import com.lsh.vivo.entity.Order;
 import com.lsh.vivo.enumerate.BaseResultCodeEnum;
@@ -29,14 +30,14 @@ public class OrderController {
 
     @GetMapping("/last")
     public List<OrderVO> listLastOrder(@NotNull String userId) {
-        List<Order> orders =  orderService.listLastOrder(userId);
+        List<Order> orders = orderService.listLastOrder(userId);
         return OrderMpp.INSTANCE.toVO(orders);
     }
 
     @GetMapping
     public List<OrderVO> listOrder(@NotNull OrderStatusEnum status, @NotNull String userId) {
         String status1 = OrderStatusEnum.A.equals(status) ? "" : status.name();
-        List<Order> orders =  orderService.listOrder(userId, status1);
+        List<Order> orders = orderService.listOrder(userId, status1);
         return OrderMpp.INSTANCE.toVO(orders);
     }
 
@@ -63,7 +64,19 @@ public class OrderController {
 
     @GetMapping("/unpaidCount")
     public Integer countUnpaid(@NotNull String userId) {
-        return orderService. countUnpaid(userId);
+        return orderService.countUnpaid(userId);
+    }
+
+    @GetMapping("/refund")
+    public List<OrderVO> listRefundOrder(@NotNull String userId) {
+        List<Order> orders = orderService.listRefundOrder(userId);
+        return OrderMpp.INSTANCE.toVO(orders);
+    }
+
+    @PutMapping("/type")
+    public void changeType(@NotNull @RequestBody OrderTypeVO orderTypeVO) {
+        Order newOrder = OrderMpp.INSTANCE.toDO(orderTypeVO);
+        orderService.updateById(newOrder);
     }
 
 }

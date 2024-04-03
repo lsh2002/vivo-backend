@@ -7,6 +7,7 @@ import com.lsh.vivo.bean.dto.order.OrderDataDTO;
 import com.lsh.vivo.entity.Order;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
+import com.lsh.vivo.enumerate.ServiceTypeEnum;
 import com.lsh.vivo.enumerate.StockStatusEnum;
 import com.lsh.vivo.event.order.bean.OrderSaveEvent;
 import com.lsh.vivo.mapper.OrderMapper;
@@ -141,12 +142,12 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
     @Override
     public Page<Order> page(Page<Order> page, OrderConditionDTO orderConditionDTO) {
-        String status = orderConditionDTO.getStatus() == null ? "" : orderConditionDTO.getStatus().name();
         return queryChain()
                 .from(ORDER)
                 .leftJoin(GOODS_SKU).on(ORDER.SKU_ID.eq(GOODS_SKU.ID))
                 .where(ORDER.ORDER_ID.likeLeft(orderConditionDTO.getOrderId(), If::hasText))
-                .and(ORDER.STATUS.eq(status, If::hasText))
+                .and(ORDER.STATUS.eq(orderConditionDTO.getStatus(), If::hasText))
+                .and(ORDER.SERVICE_TYPE.eq(orderConditionDTO.getServiceTypeEnum(), If::hasText))
                 .and(ORDER.RECEIVER_NAME.like(orderConditionDTO.getReceiverName(), If::hasText))
                 .and(ORDER.RECEIVER_PHONE.like(orderConditionDTO.getReceiverPhone(), If::hasText))
                 .and(ORDER.COURIER_NUMBER.likeLeft(orderConditionDTO.getCourierNumber(), If::hasText))
@@ -167,14 +168,14 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         long count = queryChain()
                 .select(ORDER.ORDER_ID)
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start, end))
+                .where(ORDER.ORDER_TIME.between(start, end))
                 .count();
         result.put("count", Optional.of(count));
         // 昨日订单数
         long ycount = queryChain()
                 .select(sum(ORDER.ORDER_ID))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start.minusDays(1), end.minusDays(1)))
+                .where(ORDER.ORDER_TIME.between(start.minusDays(1), end.minusDays(1)))
                 .count();
         if (ycount != 0) {
             double number = (double) (count - ycount) / ycount * 100;
@@ -186,7 +187,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double gmv = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start, end))
+                .where(ORDER.ORDER_TIME.between(start, end))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
         result.put("gmv", gmv);
@@ -194,7 +195,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double ygmv = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start.minusDays(1), end.minusDays(1)))
+                .where(ORDER.ORDER_TIME.between(start.minusDays(1), end.minusDays(1)))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
         if (ygmv != 0) {
@@ -206,7 +207,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double gms = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start, end))
+                .where(ORDER.FINISH_TIME.between(start, end))
                 .and(ORDER.STATUS.ne(OrderStatusEnum.C.name()))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
@@ -215,7 +216,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double ygms = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start.minusDays(1), end.minusDays(1)))
+                .where(ORDER.FINISH_TIME.between(start.minusDays(1), end.minusDays(1)))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
         if (ygms != 0) {
@@ -244,14 +245,14 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         long count = queryChain()
                 .select(ORDER.ORDER_ID)
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start, end))
+                .where(ORDER.ORDER_TIME.between(start, end))
                 .count();
         result.put("count", Optional.of(count));
         // 上月订单数
         long lcount = queryChain()
                 .select(sum(ORDER.ORDER_ID))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start.minusMonths(1), end.minusMonths(1)))
+                .where(ORDER.ORDER_TIME.between(start.minusMonths(1), end.minusMonths(1)))
                 .count();
         if (lcount != 0L) {
             double number = (double) ((count - lcount) / lcount * 100);
@@ -262,7 +263,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double gmv = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start, end))
+                .where(ORDER.ORDER_TIME.between(start, end))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
         result.put("gmv", gmv);
@@ -270,7 +271,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double lgmv = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start.minusMonths(1), end.minusMonths(1)))
+                .where(ORDER.ORDER_TIME.between(start.minusMonths(1), end.minusMonths(1)))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
         if (lgmv != 0D) {
@@ -282,7 +283,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double gms = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start, end))
+                .where(ORDER.FINISH_TIME.between(start, end))
                 .and(ORDER.STATUS.ne(OrderStatusEnum.C.name()))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
@@ -291,7 +292,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         Double lgms = queryChain()
                 .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
                 .from(ORDER)
-                .where(ORDER.PAY_TIME.between(start.minusMonths(1), end.minusMonths(1)))
+                .where(ORDER.FINISH_TIME.between(start.minusMonths(1), end.minusMonths(1)))
                 .oneAsOpt(Double.class)
                 .orElse((double) 0);
         if (lgms != 0D) {
@@ -323,6 +324,15 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .listAs(OrderDataDTO.class);
         result.put("gmv", orderDataDTOS2);
         return result;
+    }
+
+    @Override
+    public List<Order> listRefundOrder(String userId) {
+        QueryWrapper queryWrapper = select()
+                .where(ORDER.USER_ID.eq(userId))
+                .and(ORDER.SERVICE_TYPE.in(ServiceTypeEnum.listServiceType()))
+                .orderBy(ORDER.SERVICE_TIME.desc());
+        return mapper.selectListWithRelationsByQuery(queryWrapper);
     }
 }
 

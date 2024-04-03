@@ -25,7 +25,9 @@ public enum GoodsStatusEnum implements CommonFormEnumParser<GoodsStatusEnum> {
     /**
      * 下架
      */
-    D("下架");
+    D("下架"),
+
+    T("删除");
 
     /**
      * 描述

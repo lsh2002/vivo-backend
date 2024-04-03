@@ -41,7 +41,7 @@ public class OrderController {
      */
     private static final String MODULE_PREFIX = "order:";
 
-    @Operation(summary = "查询某个商品信息", description = "授权限控制，order:detail - 查看单条记录权限, order:* - 商品模块全部权限")
+    @Operation(summary = "查询某个订单信息", description = "授权限控制，order:detail - 查看单条记录权限, order:* - 订单模块全部权限")
     @ApiOperationSupport(order = 1)
     @PreAuthorize("hasAuthority('order:view') || hasAuthority('order:*')")
     @GetMapping("/{id}")
@@ -57,7 +57,7 @@ public class OrderController {
         return orderService.listPermissions(MODULE_PREFIX);
     }
 
-    @Operation(summary = "查询商品列表信息", description = "授权限控制，order:view - 查询商品列表权限, order:* - 商品模块全部权限")
+    @Operation(summary = "查询订单列表信息", description = "授权限控制，order:view - 查询订单列表权限, order:* - 订单模块全部权限")
     @ApiOperationSupport(order = 5)
     @PreAuthorize("hasAuthority('order:view') || hasAuthority('order:*')")
     @GetMapping

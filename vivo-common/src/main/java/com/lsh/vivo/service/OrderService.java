@@ -35,4 +35,6 @@ public interface OrderService extends CommonService<Order> {
     JSONObject getMonthData();
 
     JSONObject getYearData();
+
+    List<Order> listRefundOrder(String userId);
 }

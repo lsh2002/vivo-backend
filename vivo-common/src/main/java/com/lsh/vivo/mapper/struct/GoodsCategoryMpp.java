@@ -72,4 +72,6 @@ public interface GoodsCategoryMpp {
      * 转前端交互商品类别下拉框数据
      */
     List<GoodsCategorySelectVO> toSelectVO(List<GoodsCategory> goodsCats);
+
+    List<GoodsCategoryVO> toVO(List<GoodsCategory> goodsCats);
 }

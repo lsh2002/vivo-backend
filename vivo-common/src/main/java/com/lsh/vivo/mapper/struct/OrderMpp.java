@@ -3,6 +3,7 @@ package com.lsh.vivo.mapper.struct;
 import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
 import com.lsh.vivo.bean.request.order.OrderConditionVO;
 import com.lsh.vivo.bean.request.order.OrderSaveVO;
+import com.lsh.vivo.bean.request.order.OrderTypeVO;
 import com.lsh.vivo.bean.request.order.OrderUpdateVO;
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.goods.GoodsVO;
@@ -40,13 +41,15 @@ public interface OrderMpp {
     @Mapping(target = "deliverTime", source = "deliverTime", qualifiedByName = "localDateTimeToLong")
     @Mapping(target = "finishTime", source = "finishTime", qualifiedByName = "localDateTimeToLong")
     @Mapping(target = "cancelTime", source = "cancelTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "orderTime", source = "orderTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "serviceTime", source = "serviceTime", qualifiedByName = "localDateTimeToLong")
     OrderVO toVO(Order order);
 
     List<OrderVO> toVO(List<Order> orders);
 
     List<Order> toDO(List<OrderSaveVO> orderSaveVOs);
 
-    @Mapping(target = "payTime", source = "payTime", qualifiedByName = "longToLocalDateTime")
+    @Mapping(target = "orderTime", source = "orderTime", qualifiedByName = "longToLocalDateTime")
     Order toDO(OrderSaveVO orderSaveVO);
 
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
@@ -68,4 +71,6 @@ public interface OrderMpp {
     @Mapping(target = "deliverTime", source = "deliverTime", qualifiedByName = "longToLocalDateTime")
     Order toDO(OrderUpdateVO orderUpdateVO);
 
+    @Mapping(target = "serviceTime", source = "serviceTime", qualifiedByName = "longToLocalDateTime")
+    Order toDO(OrderTypeVO orderTypeVO);
 }

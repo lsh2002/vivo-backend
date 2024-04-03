@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * 订单状态
+ * 商品状态
  *
  * @author lsh
  * @version 1.0.0
@@ -16,23 +18,15 @@ import java.util.Objects;
 @Slf4j
 @AllArgsConstructor
 @Getter
-public enum OrderStatusEnum implements CommonFormEnumParser<OrderStatusEnum> {
+public enum ServiceTypeEnum implements CommonFormEnumParser<ServiceTypeEnum> {
 
-    A("全部"),
-
-    P("待付款"),
-
-    S("待发货"),
-
-    R("待收货"),
-
-    F("已完成"),
+    S("成功"),
 
     C("已取消"),
 
-    B("售后中"),
+    R("商家拒绝"),
 
-    T("删除"),
+    D("待审批"),
     ;
 
     /**
@@ -46,12 +40,20 @@ public enum OrderStatusEnum implements CommonFormEnumParser<OrderStatusEnum> {
     }
 
     @Override
-    public OrderStatusEnum fromValue(String input) {
-        for (OrderStatusEnum statusEnum : values()) {
+    public ServiceTypeEnum fromValue(String input) {
+        for (ServiceTypeEnum statusEnum : values()) {
             if (Objects.equals(statusEnum.name(), input)) {
                 return statusEnum;
             }
         }
         return null;
+    }
+
+    public static List<String> listServiceType() {
+        List<String> list = new ArrayList<>();
+        for (ServiceTypeEnum value : values()) {
+            list.add(value.name());
+        }
+        return list;
     }
 }

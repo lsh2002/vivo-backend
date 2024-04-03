@@ -2,6 +2,7 @@ package com.lsh.vivo.bean.response.goods.seckill;
 
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.system.BaseEntityVO;
+import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,6 +41,8 @@ public class GoodsSeckillVO extends BaseEntityVO {
      * 结束时间
      */
     private Long endTime;
+
+    private GoodsStatusEnum status;
 
     private GoodsSkuVO goodsSku;
 }

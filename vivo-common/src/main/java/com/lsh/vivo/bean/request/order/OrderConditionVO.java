@@ -2,6 +2,7 @@ package com.lsh.vivo.bean.request.order;
 
 import com.lsh.vivo.bean.request.system.PageRequest;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
+import com.lsh.vivo.enumerate.ServiceTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,4 +27,6 @@ public class OrderConditionVO extends PageRequest {
     private String courierNumber;
 
     private OrderStatusEnum status;
+
+    private ServiceTypeEnum serviceType;
 }

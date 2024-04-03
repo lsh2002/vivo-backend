@@ -51,8 +51,8 @@ public class GoodsCatController {
     }
 
     @GetMapping("/child")
-    public List<GoodsCategorySelectVO> selectList(String id) {
-        List<GoodsCategory> goodsCats = goodsCategoryService.childList(id);
+    public List<GoodsCategorySelectVO> selectList(String categoryId) {
+        List<GoodsCategory> goodsCats = goodsCategoryService.childList(categoryId);
         return GoodsCategoryMpp.INSTANCE.toSelectVO(goodsCats);
     }
 }

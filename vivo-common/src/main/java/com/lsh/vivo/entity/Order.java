@@ -40,6 +40,11 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
     private String skuId;
 
     /**
+     * 服务类型
+     */
+    private String serviceType;
+
+    /**
      * 收货人姓名
      */
     private String receiverName;
@@ -68,6 +73,8 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
      * 下单时间
      */
     private LocalDateTime orderTime;
+
+    private LocalDateTime serviceTime;
 
     /**
      * 付款时间

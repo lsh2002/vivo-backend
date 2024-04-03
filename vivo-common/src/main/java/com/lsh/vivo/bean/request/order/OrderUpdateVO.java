@@ -2,6 +2,7 @@ package com.lsh.vivo.bean.request.order;
 
 import com.lsh.vivo.bean.response.system.BaseUpdateVO;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
+import com.lsh.vivo.enumerate.ServiceTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,4 +35,6 @@ public class OrderUpdateVO extends BaseUpdateVO {
     private String courierNumber;
 
     private Long deliverTime;
+
+    private ServiceTypeEnum serviceType;
 }

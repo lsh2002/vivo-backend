@@ -11,11 +11,13 @@ import com.lsh.vivo.service.system.impl.CommonServiceImpl;
 import com.lsh.vivo.util.MapperStructTypeConvert;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.If;
+import com.mybatisflex.core.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import static com.lsh.vivo.entity.table.GoodsSeckillTableDef.GOODS_SECKILL;
 import static com.mybatisflex.core.query.QueryMethods.number;
+import static com.mybatisflex.core.query.QueryMethods.select;
 
 /**
  * @author ASUS
@@ -32,15 +34,15 @@ public class GoodsSeckillServiceImpl extends CommonServiceImpl<GoodsSeckillMappe
     @Override
     public Page<GoodsSeckill> page(Page<GoodsSeckill> page, String name, GoodsStatusEnum statusEnum, Long startTime, Long endTime) {
         String status = statusEnum == null ? null : statusEnum.name();
-        return queryChain()
+        QueryWrapper queryWrapper =  select()
                 .from(GOODS_SECKILL)
                 .where(GOODS_SECKILL.SKU_NAME.eq(name, If::hasText))
                 .and(GOODS_SECKILL.STATUS.eq(status))
                 .and(GOODS_SECKILL.STATUS.ne(CommonStatusEnum.T.name()))
                 .and(GOODS_SECKILL.START_TIME.gt(mapperStructTypeConvert.longToLocalDateTime(startTime)))
                 .and(GOODS_SECKILL.END_TIME.lt(mapperStructTypeConvert.longToLocalDateTime(endTime)))
-                .orderBy(GOODS_SECKILL.CREATE_TIME.desc(), GOODS_SECKILL.ID.desc())
-                .page(page);
+                .orderBy(GOODS_SECKILL.CREATE_TIME.desc(), GOODS_SECKILL.ID.desc());
+        return mapper.paginateWithRelations(page, queryWrapper);
     }
 
     @Override
