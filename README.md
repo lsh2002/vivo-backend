@@ -14,7 +14,7 @@
 ## 技术栈
 
 - **前端：**`Vue`+`Vue-router`+`Vuex`+`Element-ui`+`Axios`
-- **后端：**`SpringBoot` + `Mybatis-Plus` + `RabbitMQ`
+- **后端：**`SpringBoot3` + `Mybatis-Flex` + `RabbitMQ`
 - **数据库：**`MySQL` + `Redis`
 
 ## 功能实现
