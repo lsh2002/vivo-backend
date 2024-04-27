@@ -10,7 +10,9 @@ import com.lsh.vivo.mapper.struct.GoodsSkuMpp;
 import com.lsh.vivo.service.GoodsSkuService;
 import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,5 +123,10 @@ public class GoodsSkuController {
     public List<GoodsSkuVO> listStatistics() {
         List<GoodsSku> goodsSkus = goodsSkuService.listStatistics();
         return GoodsSkuMpp.INSTANCE.toVO(goodsSkus);
+    }
+
+    @DeleteMapping
+    public void removeByIds(@RequestBody @NotEmpty(message = "id集不可为空") @Parameter List<String> ids) {
+        goodsSkuService.removeByIds(ids);
     }
 }

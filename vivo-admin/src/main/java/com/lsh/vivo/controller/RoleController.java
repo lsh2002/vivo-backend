@@ -13,7 +13,9 @@ import com.lsh.vivo.mapper.struct.RoleMpp;
 import com.lsh.vivo.service.RoleRelationService;
 import com.lsh.vivo.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -131,5 +133,10 @@ public class RoleController {
     public List<RoleSelectedVO> selectList(CommonStatusEnum status) {
         List<Role> roles = roleService.selectList(status);
         return RoleMpp.INSTANCE.toSelectVO(roles);
+    }
+
+    @DeleteMapping
+    public void removeByIds(@RequestBody @NotEmpty(message = "id集不可为空") @Parameter List<String> ids) {
+        roleService.removeByIds(ids);
     }
 }

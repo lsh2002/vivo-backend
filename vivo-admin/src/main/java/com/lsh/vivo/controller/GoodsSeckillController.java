@@ -9,6 +9,8 @@ import com.lsh.vivo.entity.GoodsSeckill;
 import com.lsh.vivo.mapper.struct.GoodsSeckillMpp;
 import com.lsh.vivo.service.GoodsSeckillService;
 import com.mybatisflex.core.paginate.Page;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +51,10 @@ public class GoodsSeckillController {
         GoodsSeckill goodsSeckill = GoodsSeckillMpp.INSTANCE.toDO(saveVO);
         goodsSeckillService.save(goodsSeckill);
         return GoodsSeckillMpp.INSTANCE.toVO(goodsSeckill);
+    }
+
+    @DeleteMapping
+    public void removeByIds(@RequestBody @NotEmpty(message = "id集不可为空") @Parameter List<String> ids) {
+        goodsSeckillService.removeByIds(ids);
     }
 }

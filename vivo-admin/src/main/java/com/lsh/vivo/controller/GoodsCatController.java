@@ -15,7 +15,9 @@ import com.lsh.vivo.mapper.struct.GoodsCategoryMpp;
 import com.lsh.vivo.service.GoodsCategoryService;
 import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,5 +110,10 @@ public class GoodsCatController {
     public List<GoodsCategorySelectVO> selectList(CommonStatusEnum status, GoodsCatLevelEnum level) {
         List<GoodsCategory> goodsCats = goodsCategoryService.selectList(status, level);
         return GoodsCategoryMpp.INSTANCE.toSelectVO(goodsCats);
+    }
+
+    @DeleteMapping
+    public void removeByIds(@RequestBody @NotEmpty(message = "id集不可为空") @Parameter List<String> ids) {
+        goodsCategoryService.removeByIds(ids);
     }
 }

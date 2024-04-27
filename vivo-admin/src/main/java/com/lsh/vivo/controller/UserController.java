@@ -19,7 +19,9 @@ import com.lsh.vivo.service.UserService;
 import com.lsh.vivo.util.OauthContext;
 import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -141,5 +143,10 @@ public class UserController {
                 .filter(authority -> (authority.endsWith(suffix) || authority.endsWith(suffixAll)))
                 .toList();
         return UserMpp.INSTANCE.toInfoVO(user, perms);
+    }
+
+    @DeleteMapping
+    public void removeByIds(@RequestBody @NotEmpty(message = "id集不可为空") @Parameter List<String> ids) {
+        userService.removeByIds(ids);
     }
 }

@@ -16,7 +16,9 @@ import com.lsh.vivo.mapper.struct.GoodsMpp;
 import com.lsh.vivo.service.GoodsService;
 import com.mybatisflex.core.paginate.Page;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,5 +114,10 @@ public class GoodsController {
     public List<GoodsSelectVO> select(CommonStatusEnum status) {
         List<Goods> goodsList = goodsService.selectList(status);
         return GoodsMpp.INSTANCE.toVO(goodsList);
+    }
+
+    @DeleteMapping
+    public void removeByIds(@RequestBody @NotEmpty(message = "id集不可为空") @Parameter List<String> ids) {
+        goodsService.removeByIds(ids);
     }
 }
