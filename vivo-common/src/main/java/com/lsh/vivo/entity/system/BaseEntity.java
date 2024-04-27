@@ -1,5 +1,6 @@
 package com.lsh.vivo.entity.system;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import lombok.Data;
 
@@ -61,6 +62,9 @@ public class BaseEntity implements Serializable {
      * 更新时间
      */
     private LocalDateTime modifierTime;
+
+    @Column(isLogicDelete = true)
+    private Boolean deleted;
 
     @Override
     protected BaseEntity clone() throws CloneNotSupportedException {

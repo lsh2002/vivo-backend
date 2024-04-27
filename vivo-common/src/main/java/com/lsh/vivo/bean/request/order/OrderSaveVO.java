@@ -53,6 +53,8 @@ public class OrderSaveVO extends BaseRequest {
      */
     private Long orderTime;
 
+    private String requestNo;
+
 
     private boolean cart;
 }

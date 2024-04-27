@@ -12,6 +12,7 @@
         <result property="status" column="status" jdbcType="CHAR"/>
         <result property="revision" column="revision" jdbcType="INTEGER"/>
         <result column="creator_id" property="creatorId"/>
+        <result column="request_no" property="requestNo"/>
         <result column="creator" property="creator"/>
         <result column="create_time" property="createTime"/>
         <result column="modifier_id" property="modifierId"/>

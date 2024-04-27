@@ -5,6 +5,7 @@ import com.lsh.vivo.entity.system.BaseEntity;
 import com.lsh.vivo.listener.CustomFlexListener;
 import com.mybatisflex.annotation.RelationManyToOne;
 import com.mybatisflex.annotation.RelationOneToMany;
+import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -71,6 +72,16 @@ public class GoodsSku extends BaseEntity implements Serializable {
     private String remark;
 
     /**
+     * 是否秒杀
+     */
+    private String seckill;
+
+    /**
+     * 秒杀价
+     */
+    private String seckillPrice;
+
+    /**
      * 商品
      */
     @RelationManyToOne(
@@ -84,9 +95,19 @@ public class GoodsSku extends BaseEntity implements Serializable {
      */
     @RelationOneToMany(
             selfField = "id", targetField = "goodsSkuId",
-            selectColumns = {"url"}
+            selectColumns = {"url", "id", "master"}
     )
     private List<GoodsPicture> goodsPictures;
+
+    /**
+     * 商品
+     */
+    @RelationOneToOne(
+            selfField = "id", targetField = "skuId",
+            joinTargetColumn = "sku_id",
+            selectColumns = {"start_time", "end_time"}
+    )
+    private GoodsSeckill goodsSeckill;
 
     @Override
     public GoodsSku clone() {

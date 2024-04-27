@@ -5,11 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
 import com.lsh.vivo.bean.dto.order.OrderDataDTO;
 import com.lsh.vivo.entity.Order;
-import com.lsh.vivo.enumerate.CommonStatusEnum;
-import com.lsh.vivo.enumerate.OrderStatusEnum;
-import com.lsh.vivo.enumerate.ServiceTypeEnum;
-import com.lsh.vivo.enumerate.StockStatusEnum;
+import com.lsh.vivo.enumerate.*;
 import com.lsh.vivo.event.order.bean.OrderSaveEvent;
+import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.OrderMapper;
 import com.lsh.vivo.service.GoodsSkuService;
 import com.lsh.vivo.service.OrderService;
@@ -78,7 +76,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .where(ORDER.USER_ID.eq(userId))
                 .and(ORDER.STATUS.eq(status, If::hasText))
                 .and(ORDER.STATUS.ne(OrderStatusEnum.T.name()))
-                .orderBy(ORDER.PAY_TIME.desc());
+                .orderBy(ORDER.ORDER_TIME.desc());
         return mapper.selectListWithRelationsByQuery(queryWrapper);
     }
 
@@ -100,7 +98,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .list();
         if (OrderStatusEnum.F.name().equals(status)) {
             list.forEach(order -> {
-                 goodsSkuService.updateChain()
+                goodsSkuService.updateChain()
                         .set(GOODS_SKU.SALES, GOODS_SKU.SALES.add(order.getNum()))
                         .where(GOODS_SKU.ID.eq(order.getSkuId()))
                         .update();
@@ -121,7 +119,18 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveBatch(Collection<Order> entities, boolean cart) {
+    public boolean saveBatch(Collection<Order> entities, boolean cart, String requestNo) {
+        String userId = entities.stream().map(Order::getUserId).toList().get(0);
+        boolean exists = queryChain()
+                .select(number(1))
+                .where(ORDER.USER_ID.eq(userId))
+                .and(ORDER.REQUEST_NO.eq(requestNo))
+                .limit(1)
+                .exists();
+        if (exists) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_EXISTED_ORDER);
+        }
+
         for (Order entity : entities) {
             entity.setOrderId(DateTime.now().year() + snowflake.nextIdStr());
             entity.setStatus(OrderStatusEnum.P.name());
@@ -130,7 +139,6 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         super.saveBatch(entities);
 
         if (cart) {
-            String userId = entities.stream().map(Order::getUserId).toList().get(0);
             List<String> skuIds = entities.stream().map(Order::getSkuId).toList();
             OrderSaveEvent orderSaveEvent = new OrderSaveEvent(this);
             orderSaveEvent.setSkuIds(skuIds);
@@ -147,13 +155,12 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .leftJoin(GOODS_SKU).on(ORDER.SKU_ID.eq(GOODS_SKU.ID))
                 .where(ORDER.ORDER_ID.likeLeft(orderConditionDTO.getOrderId(), If::hasText))
                 .and(ORDER.STATUS.eq(orderConditionDTO.getStatus(), If::hasText))
-                .and(ORDER.SERVICE_TYPE.eq(orderConditionDTO.getServiceTypeEnum(), If::hasText))
                 .and(ORDER.RECEIVER_NAME.like(orderConditionDTO.getReceiverName(), If::hasText))
                 .and(ORDER.RECEIVER_PHONE.like(orderConditionDTO.getReceiverPhone(), If::hasText))
                 .and(ORDER.COURIER_NUMBER.likeLeft(orderConditionDTO.getCourierNumber(), If::hasText))
                 .and(GOODS_SKU.NAME.like(orderConditionDTO.getName(), If::hasText))
                 .and(ORDER.STATUS.ne(CommonStatusEnum.T.name()))
-                .orderBy(ORDER.PAY_TIME.desc())
+                .orderBy(ORDER.ORDER_TIME.desc())
                 .page(page);
     }
 
@@ -333,6 +340,23 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .and(ORDER.SERVICE_TYPE.in(ServiceTypeEnum.listServiceType()))
                 .orderBy(ORDER.SERVICE_TIME.desc());
         return mapper.selectListWithRelationsByQuery(queryWrapper);
+    }
+
+    @Override
+    public Page<Order> pageAfterSales(Page<Order> page, OrderConditionDTO orderConditionDTO) {
+        return queryChain()
+                .from(ORDER)
+                .leftJoin(GOODS_SKU).on(ORDER.SKU_ID.eq(GOODS_SKU.ID))
+                .where(ORDER.ORDER_ID.likeLeft(orderConditionDTO.getOrderId(), If::hasText))
+                .and(ORDER.SERVICE_TYPE.eq(orderConditionDTO.getServiceType(), If::hasText))
+                .and(ORDER.RECEIVER_NAME.like(orderConditionDTO.getReceiverName(), If::hasText))
+                .and(ORDER.RECEIVER_PHONE.like(orderConditionDTO.getReceiverPhone(), If::hasText))
+                .and(ORDER.COURIER_NUMBER.likeLeft(orderConditionDTO.getCourierNumber(), If::hasText))
+                .and(GOODS_SKU.NAME.like(orderConditionDTO.getName(), If::hasText))
+                .and(ORDER.STATUS.ne(CommonStatusEnum.T.name()))
+                .and(ORDER.SERVICE_TYPE.in(ServiceTypeEnum.listServiceType()))
+                .orderBy(ORDER.SERVICE_TIME.desc())
+                .page(page);
     }
 }
 

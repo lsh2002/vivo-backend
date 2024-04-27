@@ -74,6 +74,13 @@ public class OrderTableDef extends TableDef {
     public final QueryColumn CREATOR_ID = new QueryColumn(this, "creator_id");
 
     /**
+     * 下单时间
+     */
+    public final QueryColumn ORDER_TIME = new QueryColumn(this, "order_time");
+
+    public final QueryColumn REQUEST_NO = new QueryColumn(this, "request_no");
+
+    /**
      * 取消时间
      */
     public final QueryColumn CANCEL_TIME = new QueryColumn(this, "cancel_time");
@@ -97,6 +104,13 @@ public class OrderTableDef extends TableDef {
      * 发货时间
      */
     public final QueryColumn DELIVER_TIME = new QueryColumn(this, "deliver_time");
+
+    public final QueryColumn SERVICE_TIME = new QueryColumn(this, "service_time");
+
+    /**
+     * 服务类型
+     */
+    public final QueryColumn SERVICE_TYPE = new QueryColumn(this, "service_type");
 
     /**
      * 更新时间
@@ -131,7 +145,7 @@ public class OrderTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NUM, PRICE, SKU_ID, STATUS, USER_ID, CREATOR, ORDER_ID, PAY_TIME, MODIFIER, REVISION, CREATOR_ID, CANCEL_TIME, CREATE_TIME, FINISH_TIME, MODIFIER_ID, DELIVER_TIME, MODIFIER_TIME, RECEIVER_NAME, COURIER_NUMBER, RECEIVER_PHONE, RECEIVER_ADDRESS};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NUM, PRICE, SKU_ID, STATUS, USER_ID, CREATOR, ORDER_ID, PAY_TIME, MODIFIER, REVISION, CREATOR_ID, ORDER_TIME, REQUEST_NO, CANCEL_TIME, CREATE_TIME, FINISH_TIME, MODIFIER_ID, DELIVER_TIME, SERVICE_TIME, SERVICE_TYPE, MODIFIER_TIME, RECEIVER_NAME, COURIER_NUMBER, RECEIVER_PHONE, RECEIVER_ADDRESS};
 
     public OrderTableDef() {
         super("", "order");

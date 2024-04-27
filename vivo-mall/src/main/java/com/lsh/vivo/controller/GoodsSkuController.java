@@ -51,7 +51,7 @@ public class GoodsSkuController {
     @GetMapping
     public PageVO<GoodsSkuVO> listPageable(@NotNull GoodsSkuSearchVO condition) {
         Page<GoodsSku> page = new Page<>(condition.getPage(), condition.getSize());
-        Page<GoodsSku> goodsSkuPage = goodsSkuService.page(page, condition.getKeywords(), condition.getCategoryId());
+        Page<GoodsSku> goodsSkuPage = goodsSkuService.page(page, condition.getKeyword(), condition.getCategoryId());
         return GoodsSkuMpp.INSTANCE.toPageVO(goodsSkuPage);
     }
 

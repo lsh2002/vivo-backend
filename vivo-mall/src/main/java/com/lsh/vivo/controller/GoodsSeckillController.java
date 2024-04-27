@@ -1,6 +1,6 @@
 package com.lsh.vivo.controller;
 
-import com.lsh.vivo.bean.request.goods.seckill.GoodsSeckillSearchVO;
+import com.lsh.vivo.bean.request.system.PageRequest;
 import com.lsh.vivo.bean.response.goods.seckill.GoodsSeckillVO;
 import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.entity.GoodsSeckill;
@@ -25,9 +25,9 @@ public class GoodsSeckillController {
     private final GoodsSeckillService goodsSeckillService;
 
     @GetMapping
-    public PageVO<GoodsSeckillVO> listPageable(@NotNull GoodsSeckillSearchVO condition) {
-        Page<GoodsSeckill> page = new Page<>(condition.getPage(), condition.getSize());
-        Page<GoodsSeckill> goodsSeckillPage = goodsSeckillService.page(page, condition.getName(), condition.getStatus(), condition.getStartTime(), condition.getEndTime());
+    public PageVO<GoodsSeckillVO> listPageable(@NotNull PageRequest request) {
+        Page<GoodsSeckill> page = new Page<>(request.getPage(), request.getSize());
+        Page<GoodsSeckill> goodsSeckillPage = goodsSeckillService.page(page);
         return GoodsSeckillMpp.INSTANCE.toPageVO(goodsSeckillPage);
     }
 }

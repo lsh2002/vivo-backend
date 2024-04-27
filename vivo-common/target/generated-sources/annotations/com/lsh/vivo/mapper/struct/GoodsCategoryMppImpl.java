@@ -18,7 +18,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-29T17:08:25+0800",
+    date = "2024-04-04T14:04:56+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsCategoryMppImpl implements GoodsCategoryMpp {
@@ -63,7 +63,7 @@ public class GoodsCategoryMppImpl implements GoodsCategoryMpp {
 
         pageVO.setPage( goodsCategoryPageToPageResult( goodsCategoryPage ) );
         if ( goodsCategoryPage.hasRecords() ) {
-            pageVO.setResults( goodsCategoryListToGoodsCategoryVOList( goodsCategoryPage.getRecords() ) );
+            pageVO.setResults( toVO( goodsCategoryPage.getRecords() ) );
         }
 
         return pageVO;
@@ -138,6 +138,20 @@ public class GoodsCategoryMppImpl implements GoodsCategoryMpp {
         return list;
     }
 
+    @Override
+    public List<GoodsCategoryVO> toVO(List<GoodsCategory> goodsCats) {
+        if ( goodsCats == null ) {
+            return null;
+        }
+
+        List<GoodsCategoryVO> list = new ArrayList<GoodsCategoryVO>( goodsCats.size() );
+        for ( GoodsCategory goodsCategory : goodsCats ) {
+            list.add( toVO( goodsCategory ) );
+        }
+
+        return list;
+    }
+
     protected PageResult goodsCategoryPageToPageResult(Page<GoodsCategory> page) {
         if ( page == null ) {
             return null;
@@ -150,19 +164,6 @@ public class GoodsCategoryMppImpl implements GoodsCategoryMpp {
         pageResult.setCurrent( page.getPageNumber() );
 
         return pageResult;
-    }
-
-    protected List<GoodsCategoryVO> goodsCategoryListToGoodsCategoryVOList(List<GoodsCategory> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<GoodsCategoryVO> list1 = new ArrayList<GoodsCategoryVO>( list.size() );
-        for ( GoodsCategory goodsCategory : list ) {
-            list1.add( toVO( goodsCategory ) );
-        }
-
-        return list1;
     }
 
     protected GoodsCategorySelectVO goodsCategoryToGoodsCategorySelectVO(GoodsCategory goodsCategory) {

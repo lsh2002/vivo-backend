@@ -58,6 +58,11 @@ public class GoodsSkuTableDef extends TableDef {
     public final QueryColumn GOODS_ID = new QueryColumn(this, "goods_id");
 
     /**
+     * 是否秒杀
+     */
+    public final QueryColumn SECKILL = new QueryColumn(this, "seckill");
+
+    /**
      * 更新人
      */
     public final QueryColumn MODIFIER = new QueryColumn(this, "modifier");
@@ -98,6 +103,11 @@ public class GoodsSkuTableDef extends TableDef {
     public final QueryColumn MODIFIER_TIME = new QueryColumn(this, "modifier_time");
 
     /**
+     * 秒杀价
+     */
+    public final QueryColumn SECKILL_PRICE = new QueryColumn(this, "seckill_price");
+
+    /**
      * 售价
      */
     public final QueryColumn SELLING_PRICE = new QueryColumn(this, "selling_price");
@@ -110,7 +120,7 @@ public class GoodsSkuTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NAME, PRICE, SALES, STOCK, REMARK, STATUS, CREATOR, GOODS_ID, MODIFIER, REVISION, ATTRIBUTE, CREATOR_ID, GOODS_NAME, CREATE_TIME, MODIFIER_ID, MODIFIER_TIME, SELLING_PRICE};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NAME, PRICE, SALES, STOCK, REMARK, STATUS, CREATOR, GOODS_ID, SECKILL, MODIFIER, REVISION, ATTRIBUTE, CREATOR_ID, GOODS_NAME, CREATE_TIME, MODIFIER_ID, MODIFIER_TIME, SECKILL_PRICE, SELLING_PRICE};
 
     public GoodsSkuTableDef() {
         super("", "goods_sku");

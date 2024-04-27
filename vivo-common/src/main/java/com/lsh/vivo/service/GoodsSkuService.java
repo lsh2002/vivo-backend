@@ -35,7 +35,7 @@ public interface GoodsSkuService extends CommonService<GoodsSku> {
      * @param page   分页对象
      * @return 分页对象
      */
-    Page<GoodsSku> page(Page<GoodsSku> page, String keywords, String categoryId);
+    Page<GoodsSku> page(Page<GoodsSku> page, String keyword, String categoryId);
 
 
     List<GoodsSku> listByGoodsId(String goodsId);

@@ -50,14 +50,14 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
     }
 
     @Override
-    public Page<GoodsSku> page(Page<GoodsSku> page, String keywords, String categoryId) {
+    public Page<GoodsSku> page(Page<GoodsSku> page, String keyword, String categoryId) {
         QueryWrapper queryWrapper = query()
                 .from(GOODS_SKU)
                 .leftJoin(GOODS)
                 .on(GOODS_SKU.GOODS_ID.eq(GOODS.ID))
-                .where(GOODS_SKU.GOODS_NAME.like(keywords, If::hasText)
-                        .or(GOODS_SKU.ATTRIBUTE.like(keywords, If::hasText))
-                        .or(GOODS_SKU.ATTRIBUTE.like(keywords, If::hasText))
+                .where(GOODS_SKU.GOODS_NAME.like(keyword, If::hasText)
+                        .or(GOODS_SKU.ATTRIBUTE.like(keyword, If::hasText))
+                        .or(GOODS_SKU.ATTRIBUTE.like(keyword, If::hasText))
                 )
                 .and(GOODS_SKU.STATUS.eq(GoodsStatusEnum.U.name()))
                 .and(GOODS.CATEGORY_ID.eq(categoryId, If::hasText))

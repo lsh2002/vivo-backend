@@ -1,7 +1,8 @@
 package com.lsh.vivo.bean.response.goods;
 
+import com.lsh.vivo.bean.response.goods.picture.GoodsPictureVO;
 import com.lsh.vivo.bean.response.system.BaseEntityVO;
-import com.lsh.vivo.entity.GoodsPicture;
+import com.lsh.vivo.enumerate.CommonColumnEnum;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -78,10 +79,14 @@ public class GoodsSkuVO extends BaseEntityVO {
      */
     private GoodsStatusEnum status;
 
+    private CommonColumnEnum seckill;
+
+    private Double seckillPrice;
+
     /**
      * 商品图片
      */
-    private List<GoodsPicture> goodsPictures;
+    private List<GoodsPictureVO> goodsPictures;
 
     /**
      * 商品图片

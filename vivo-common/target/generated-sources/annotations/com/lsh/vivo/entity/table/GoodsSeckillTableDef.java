@@ -20,6 +20,11 @@ public class GoodsSeckillTableDef extends TableDef {
     public final QueryColumn ID = new QueryColumn(this, "id");
 
     /**
+     * 商品id
+     */
+    public final QueryColumn SKU_ID = new QueryColumn(this, "sku_id");
+
+    /**
      * 状态
      */
     public final QueryColumn STATUS = new QueryColumn(this, "status");
@@ -34,10 +39,7 @@ public class GoodsSeckillTableDef extends TableDef {
      */
     public final QueryColumn END_TIME = new QueryColumn(this, "end_time");
 
-    /**
-     * 商品id
-     */
-    public final QueryColumn GOODS_ID = new QueryColumn(this, "goods_id");
+    public final QueryColumn SKU_NAME = new QueryColumn(this, "sku_name");
 
     /**
      * 更新人
@@ -92,7 +94,7 @@ public class GoodsSeckillTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, STATUS, CREATOR, END_TIME, GOODS_ID, MODIFIER, REVISION, CREATOR_ID, START_TIME, CREATE_TIME, MODIFIER_ID, SECKILL_NUM, MODIFIER_TIME, SECKILL_PRICE};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, SKU_ID, STATUS, CREATOR, END_TIME, SKU_NAME, MODIFIER, REVISION, CREATOR_ID, START_TIME, CREATE_TIME, MODIFIER_ID, SECKILL_NUM, MODIFIER_TIME, SECKILL_PRICE};
 
     public GoodsSeckillTableDef() {
         super("", "goods_seckill");

@@ -91,4 +91,15 @@ public class OrderController {
     public JSONObject getYearData() {
         return orderService.getYearData();
     }
+
+    @Operation(summary = "查询订单列表信息", description = "授权限控制，order:view - 查询订单列表权限, order:* - 订单模块全部权限")
+    @ApiOperationSupport(order = 5)
+    @PreAuthorize("hasAuthority('order:view') || hasAuthority('order:*')")
+    @GetMapping("/afterSales")
+    public PageVO<OrderVO> listAfterSales(@NotNull OrderConditionVO condition) {
+        OrderConditionDTO orderConditionDTO = OrderMpp.INSTANCE.toDTO(condition);
+        Page<Order> page = new Page<>(condition.getPage(), condition.getSize());
+        Page<Order> orderPage = orderService.pageAfterSales(page, orderConditionDTO);
+        return OrderMpp.INSTANCE.toPageVO(orderPage);
+    }
 }

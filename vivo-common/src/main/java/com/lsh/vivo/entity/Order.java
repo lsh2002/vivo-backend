@@ -101,6 +101,8 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
      */
     private String courierNumber;
 
+    private String requestNo;
+
     /**
      * 商品
      */

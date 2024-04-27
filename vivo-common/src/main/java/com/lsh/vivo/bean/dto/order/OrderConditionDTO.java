@@ -23,5 +23,5 @@ public class OrderConditionDTO {
 
     private String status;
 
-    private String serviceTypeEnum;
+    private String serviceType;
 }

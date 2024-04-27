@@ -20,7 +20,7 @@ public class GoodsSkuSearchVO extends PageRequest {
     /**
      * 查询关键词
      */
-    private String keywords;
+    private String keyword;
 
     private String categoryId;
 }

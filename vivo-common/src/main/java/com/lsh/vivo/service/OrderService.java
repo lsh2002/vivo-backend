@@ -26,7 +26,7 @@ public interface OrderService extends CommonService<Order> {
 
     int countUnpaid(String userId);
 
-    boolean saveBatch(Collection<Order> entities, boolean cart);
+    boolean saveBatch(Collection<Order> entities, boolean cart, String requestNo);
 
     Page<Order> page(Page<Order> page, OrderConditionDTO orderConditionDTO);
 
@@ -37,4 +37,6 @@ public interface OrderService extends CommonService<Order> {
     JSONObject getYearData();
 
     List<Order> listRefundOrder(String userId);
+
+    Page<Order> pageAfterSales(Page<Order> page, OrderConditionDTO orderConditionDTO);
 }

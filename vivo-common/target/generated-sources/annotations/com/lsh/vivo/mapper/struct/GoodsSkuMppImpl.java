@@ -10,13 +10,16 @@ import com.lsh.vivo.bean.request.goods.sku.StockUpdateVO;
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.goods.GoodsVO;
 import com.lsh.vivo.bean.response.goods.cat.GoodsCategorySelectVO;
+import com.lsh.vivo.bean.response.goods.picture.GoodsPictureVO;
 import com.lsh.vivo.bean.response.system.PageResult;
 import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.entity.Goods;
 import com.lsh.vivo.entity.GoodsCategory;
 import com.lsh.vivo.entity.GoodsPicture;
 import com.lsh.vivo.entity.GoodsSku;
+import com.lsh.vivo.enumerate.CommonColumnEnum;
 import com.lsh.vivo.enumerate.GoodsCatLevelEnum;
+import com.lsh.vivo.enumerate.GoodsPictureEnum;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.util.MapperStructTypeConvert;
 import com.mybatisflex.core.paginate.Page;
@@ -26,7 +29,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-29T17:08:25+0800",
+    date = "2024-04-04T14:04:56+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsSkuMppImpl implements GoodsSkuMpp {
@@ -62,10 +65,13 @@ public class GoodsSkuMppImpl implements GoodsSkuMpp {
         if ( goodsSku.getStatus() != null ) {
             goodsSkuVO.setStatus( Enum.valueOf( GoodsStatusEnum.class, goodsSku.getStatus() ) );
         }
-        List<GoodsPicture> list = goodsSku.getGoodsPictures();
-        if ( list != null ) {
-            goodsSkuVO.setGoodsPictures( new ArrayList<GoodsPicture>( list ) );
+        if ( goodsSku.getSeckill() != null ) {
+            goodsSkuVO.setSeckill( Enum.valueOf( CommonColumnEnum.class, goodsSku.getSeckill() ) );
         }
+        if ( goodsSku.getSeckillPrice() != null ) {
+            goodsSkuVO.setSeckillPrice( Double.parseDouble( goodsSku.getSeckillPrice() ) );
+        }
+        goodsSkuVO.setGoodsPictures( goodsPictureListToGoodsPictureVOList( goodsSku.getGoodsPictures() ) );
 
         return goodsSkuVO;
     }
@@ -271,6 +277,35 @@ public class GoodsSkuMppImpl implements GoodsSkuMpp {
         }
 
         return goodsVO;
+    }
+
+    protected GoodsPictureVO goodsPictureToGoodsPictureVO(GoodsPicture goodsPicture) {
+        if ( goodsPicture == null ) {
+            return null;
+        }
+
+        GoodsPictureVO goodsPictureVO = new GoodsPictureVO();
+
+        goodsPictureVO.setId( goodsPicture.getId() );
+        if ( goodsPicture.getMaster() != null ) {
+            goodsPictureVO.setMaster( Enum.valueOf( GoodsPictureEnum.class, goodsPicture.getMaster() ) );
+        }
+        goodsPictureVO.setUrl( goodsPicture.getUrl() );
+
+        return goodsPictureVO;
+    }
+
+    protected List<GoodsPictureVO> goodsPictureListToGoodsPictureVOList(List<GoodsPicture> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<GoodsPictureVO> list1 = new ArrayList<GoodsPictureVO>( list.size() );
+        for ( GoodsPicture goodsPicture : list ) {
+            list1.add( goodsPictureToGoodsPictureVO( goodsPicture ) );
+        }
+
+        return list1;
     }
 
     protected PageResult goodsSkuPageToPageResult(Page<GoodsSku> page) {

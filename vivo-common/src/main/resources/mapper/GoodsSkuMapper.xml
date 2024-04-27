@@ -14,6 +14,8 @@
         <result property="stock" column="stock" jdbcType="INTEGER"/>
         <result property="sales" column="sales" jdbcType="INTEGER"/>
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="seckill" column="seckill" jdbcType="CHAR"/>
+        <result property="seckillPrice" column="seckill_price" jdbcType="DOUBLE"/>
         <result property="status" column="status" jdbcType="CHAR"/>
         <result property="revision" column="revision" jdbcType="INTEGER"/>
         <result property="creator" column="creator" jdbcType="VARCHAR"/>
