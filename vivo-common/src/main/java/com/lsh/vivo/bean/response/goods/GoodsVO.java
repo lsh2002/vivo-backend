@@ -1,6 +1,6 @@
 package com.lsh.vivo.bean.response.goods;
 
-import com.lsh.vivo.bean.response.system.BaseEntityVO;
+import com.lsh.vivo.bean.response.system.BaseUpdateVO;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class GoodsVO extends BaseEntityVO {
+public class GoodsVO extends BaseUpdateVO {
 
     /**
      * 商品名称

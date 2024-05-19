@@ -40,10 +40,9 @@ public interface GoodsSkuMpp {
      * @param goodsSku 商品Sku
      * @return 返回前端交互商品Sku
      */
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "goods.createTime", source = "goods.createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "goods.modifierTime", source = "goods.modifierTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "startTime", source = "goodsSeckill.startTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "endTime", source = "goodsSeckill.endTime", qualifiedByName = "localDateTimeToLong")
+    @Mapping(target = "seckillId", source = "goodsSeckill.id")
     GoodsSkuVO toVO(GoodsSku goodsSku);
 
     /**

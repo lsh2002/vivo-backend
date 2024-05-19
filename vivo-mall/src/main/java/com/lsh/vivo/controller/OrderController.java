@@ -5,9 +5,7 @@ import com.lsh.vivo.bean.request.order.OrderStatusVO;
 import com.lsh.vivo.bean.request.order.OrderTypeVO;
 import com.lsh.vivo.bean.response.order.OrderVO;
 import com.lsh.vivo.entity.Order;
-import com.lsh.vivo.enumerate.BaseResultCodeEnum;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
-import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.struct.OrderMpp;
 import com.lsh.vivo.service.OrderService;
 import jakarta.validation.constraints.NotEmpty;
@@ -42,20 +40,15 @@ public class OrderController {
     }
 
     @PostMapping
-    public List<OrderVO> saveOrder(@NotEmpty @RequestBody List<OrderSaveVO> orderSaveVOs) {
-        boolean cart = orderSaveVOs.get(0).isCart();
-        String requestNo = orderSaveVOs.get(0).getRequestNo();
-        List<Order> newOrders = OrderMpp.INSTANCE.toDO(orderSaveVOs);
-        boolean saveSuccess = orderService.saveBatch(newOrders, cart, requestNo);
-        if (!saveSuccess) {
-            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR);
-        }
-        return OrderMpp.INSTANCE.toVO(newOrders);
+    public OrderVO saveOrder(@NotNull @RequestBody OrderSaveVO orderSaveVO) {
+        Order newOrder = OrderMpp.INSTANCE.toDO(orderSaveVO);
+        orderService.save(newOrder);
+        return OrderMpp.INSTANCE.toVO(newOrder);
     }
 
     @PutMapping("/status")
     public void changeStatus(@NotNull @RequestBody OrderStatusVO orderStatusVO) {
-        orderService.updateStatus(orderStatusVO.getOrderIds(), orderStatusVO.getStatus(), orderStatusVO.getTime());
+        orderService.updateStatus(orderStatusVO.getOrderId(), orderStatusVO.getStatus(), orderStatusVO.getTime());
     }
 
     @DeleteMapping

@@ -1,7 +1,7 @@
 package com.lsh.vivo.bean.response.goods;
 
 import com.lsh.vivo.bean.response.goods.picture.GoodsPictureVO;
-import com.lsh.vivo.bean.response.system.BaseEntityVO;
+import com.lsh.vivo.bean.response.system.BaseUpdateVO;
 import com.lsh.vivo.enumerate.CommonColumnEnum;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Schema(name = "商品SKU信息")
-public class GoodsSkuVO extends BaseEntityVO {
+public class GoodsSkuVO extends BaseUpdateVO {
 
     /**
      * 商品Sku名称
@@ -83,6 +83,8 @@ public class GoodsSkuVO extends BaseEntityVO {
 
     private Double seckillPrice;
 
+    private String seckillId;
+
     /**
      * 商品图片
      */
@@ -92,4 +94,7 @@ public class GoodsSkuVO extends BaseEntityVO {
      * 商品图片
      */
     private GoodsVO goods;
+
+    private Long startTime;
+    private Long endTime;
 }

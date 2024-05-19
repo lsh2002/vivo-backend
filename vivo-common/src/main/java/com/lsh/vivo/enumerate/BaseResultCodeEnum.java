@@ -141,7 +141,9 @@ public enum BaseResultCodeEnum {
     ERROR_EXISTED_GOODS_SECKILL("E00058", "秒杀商品已存在"),
 
     ERROR_EXISTED_ORDER("E00059", "该订单已生成，请勿重复点击！"),
-    ;
+    ERROR_OUT_OF_USER_SECKILL_COUNT("E00060", "每个用户只能秒杀一次"),
+    ERROR_GOODS_SKU_STOCK("E00061", "商品库存不足，下单失败"),
+    ERROR_SECKILL("E00062", "秒杀失败");
 
     /**
      * 代码

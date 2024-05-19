@@ -3,9 +3,11 @@ package com.lsh.vivo.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.lsh.vivo.bean.request.goods.seckill.GoodsSeckillSaveVO;
 import com.lsh.vivo.bean.request.goods.seckill.GoodsSeckillSearchVO;
+import com.lsh.vivo.bean.request.goods.seckill.GoodsSeckillStatusVO;
 import com.lsh.vivo.bean.response.goods.seckill.GoodsSeckillVO;
 import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.entity.GoodsSeckill;
+import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.mapper.struct.GoodsSeckillMpp;
 import com.lsh.vivo.service.GoodsSeckillService;
 import com.mybatisflex.core.paginate.Page;
@@ -49,7 +51,16 @@ public class GoodsSeckillController {
     @PostMapping
     public GoodsSeckillVO save(@NotNull @RequestBody GoodsSeckillSaveVO saveVO) {
         GoodsSeckill goodsSeckill = GoodsSeckillMpp.INSTANCE.toDO(saveVO);
+        goodsSeckill.setStatus(GoodsStatusEnum.D.name());
         goodsSeckillService.save(goodsSeckill);
+        return GoodsSeckillMpp.INSTANCE.toVO(goodsSeckill);
+    }
+
+    @PutMapping("/status")
+    public GoodsSeckillVO updateStatus(@NotNull @RequestBody GoodsSeckillStatusVO statusVO) {
+        GoodsSeckill goodsSeckill = GoodsSeckillMpp.INSTANCE.toDO(statusVO);
+        goodsSeckillService.updateById(goodsSeckill);
+        goodsSeckill.setRevision(goodsSeckill.getRevision() + 1);
         return GoodsSeckillMpp.INSTANCE.toVO(goodsSeckill);
     }
 

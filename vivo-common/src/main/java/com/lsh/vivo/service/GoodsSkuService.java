@@ -48,4 +48,5 @@ public interface GoodsSkuService extends CommonService<GoodsSku> {
 
     List<GoodsSku> listStatistics();
 
+    void updateSeckillStatus(List<String> skuIds);
 }

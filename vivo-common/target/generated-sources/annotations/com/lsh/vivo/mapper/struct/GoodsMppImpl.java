@@ -14,7 +14,6 @@ import com.lsh.vivo.entity.Goods;
 import com.lsh.vivo.entity.GoodsCategory;
 import com.lsh.vivo.enumerate.GoodsCatLevelEnum;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
-import com.lsh.vivo.util.MapperStructTypeConvert;
 import com.mybatisflex.core.paginate.Page;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +21,10 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-04T14:04:56+0800",
+    date = "2024-05-18T01:12:38+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsMppImpl implements GoodsMpp {
-
-    private final MapperStructTypeConvert mapperStructTypeConvert = new MapperStructTypeConvert();
 
     @Override
     public GoodsVO toVO(Goods goods) {
@@ -37,14 +34,8 @@ public class GoodsMppImpl implements GoodsMpp {
 
         GoodsVO goodsVO = new GoodsVO();
 
-        goodsVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( goods.getCreateTime() ) );
-        goodsVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( goods.getModifierTime() ) );
         goodsVO.setId( goods.getId() );
         goodsVO.setRevision( goods.getRevision() );
-        goodsVO.setCreatorId( goods.getCreatorId() );
-        goodsVO.setCreator( goods.getCreator() );
-        goodsVO.setModifierId( goods.getModifierId() );
-        goodsVO.setModifier( goods.getModifier() );
         goodsVO.setName( goods.getName() );
         goodsVO.setCategoryId( goods.getCategoryId() );
         goodsVO.setCategory( goods.getCategory() );

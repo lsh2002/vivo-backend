@@ -38,8 +38,6 @@ public interface GoodsMpp {
      * @param goods 商品
      * @return 返回前端交互商品
      */
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsVO toVO(Goods goods);
 
     /**

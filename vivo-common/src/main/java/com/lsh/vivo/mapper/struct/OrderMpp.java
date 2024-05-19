@@ -35,8 +35,6 @@ public interface OrderMpp {
      */
     OrderMpp INSTANCE = Mappers.getMapper(OrderMpp.class);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     @Mapping(target = "payTime", source = "payTime", qualifiedByName = "localDateTimeToLong")
     @Mapping(target = "deliverTime", source = "deliverTime", qualifiedByName = "localDateTimeToLong")
     @Mapping(target = "finishTime", source = "finishTime", qualifiedByName = "localDateTimeToLong")
@@ -52,12 +50,8 @@ public interface OrderMpp {
     @Mapping(target = "orderTime", source = "orderTime", qualifiedByName = "longToLocalDateTime")
     Order toDO(OrderSaveVO orderSaveVO);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsSkuVO toVO(GoodsSku goodsSku);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsVO toVO(Goods goods);
 
     OrderConditionDTO toDTO(OrderConditionVO condition);

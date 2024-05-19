@@ -26,7 +26,7 @@ public enum ServiceTypeEnum implements CommonFormEnumParser<ServiceTypeEnum> {
 
     R("商家拒绝"),
 
-    D("待审批"),
+    D("售后中"),
     ;
 
     /**

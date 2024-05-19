@@ -19,21 +19,6 @@ public class OrderTableDef extends TableDef {
     public final QueryColumn ID = new QueryColumn(this, "id");
 
     /**
-     * 商品数量
-     */
-    public final QueryColumn NUM = new QueryColumn(this, "num");
-
-    /**
-     * 商品单价
-     */
-    public final QueryColumn PRICE = new QueryColumn(this, "price");
-
-    /**
-     * sku id
-     */
-    public final QueryColumn SKU_ID = new QueryColumn(this, "sku_id");
-
-    /**
      * 状态
      */
     public final QueryColumn STATUS = new QueryColumn(this, "status");
@@ -47,6 +32,8 @@ public class OrderTableDef extends TableDef {
      * 创建人
      */
     public final QueryColumn CREATOR = new QueryColumn(this, "creator");
+
+    public final QueryColumn DELETED = new QueryColumn(this, "deleted");
 
     /**
      * 订单号
@@ -101,6 +88,11 @@ public class OrderTableDef extends TableDef {
     public final QueryColumn MODIFIER_ID = new QueryColumn(this, "modifier_id");
 
     /**
+     * 商品单价
+     */
+    public final QueryColumn TOTAL_PRICE = new QueryColumn(this, "total_price");
+
+    /**
      * 发货时间
      */
     public final QueryColumn DELIVER_TIME = new QueryColumn(this, "deliver_time");
@@ -145,7 +137,7 @@ public class OrderTableDef extends TableDef {
     /**
      * 默认字段，不包含逻辑删除或者 large 等字段。
      */
-    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, NUM, PRICE, SKU_ID, STATUS, USER_ID, CREATOR, ORDER_ID, PAY_TIME, MODIFIER, REVISION, CREATOR_ID, ORDER_TIME, REQUEST_NO, CANCEL_TIME, CREATE_TIME, FINISH_TIME, MODIFIER_ID, DELIVER_TIME, SERVICE_TIME, SERVICE_TYPE, MODIFIER_TIME, RECEIVER_NAME, COURIER_NUMBER, RECEIVER_PHONE, RECEIVER_ADDRESS};
+    public final QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, STATUS, USER_ID, CREATOR, ORDER_ID, PAY_TIME, MODIFIER, REVISION, CREATOR_ID, ORDER_TIME, REQUEST_NO, CANCEL_TIME, CREATE_TIME, FINISH_TIME, MODIFIER_ID, TOTAL_PRICE, DELIVER_TIME, SERVICE_TIME, SERVICE_TYPE, MODIFIER_TIME, RECEIVER_NAME, COURIER_NUMBER, RECEIVER_PHONE, RECEIVER_ADDRESS};
 
     public OrderTableDef() {
         super("", "order");

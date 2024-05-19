@@ -1,4 +1,4 @@
-package com.lsh.vivo.rabbitmq;
+package com.lsh.vivo.mq;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;

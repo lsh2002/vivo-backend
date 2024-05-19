@@ -5,7 +5,6 @@ import com.lsh.vivo.entity.GoodsSku;
 import com.lsh.vivo.enumerate.*;
 import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.GoodsSkuMapper;
-import com.lsh.vivo.service.GoodsCategoryService;
 import com.lsh.vivo.service.GoodsPictureService;
 import com.lsh.vivo.service.GoodsSkuService;
 import com.lsh.vivo.service.system.impl.CommonServiceImpl;
@@ -35,18 +34,17 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
         implements GoodsSkuService {
 
     private final GoodsPictureService goodsPictureService;
-    private final GoodsCategoryService goodsCategoryService;
 
     @Override
     public Page<GoodsSku> page(Page<GoodsSku> page, String name, GoodsStatusEnum statusEnum, String memory, String color) {
         String status = statusEnum == null ? null : statusEnum.name();
-        return queryChain()
+        QueryWrapper queryWrapper = select()
                 .from(GOODS_SKU)
                 .where(GOODS_SKU.GOODS_NAME.eq(name, If::hasText))
                 .and(GOODS_SKU.STATUS.eq(status))
                 .and(GOODS_SKU.ATTRIBUTE.like(memory, If::hasText).and(GOODS_SKU.ATTRIBUTE.like(color, If::hasText)))
-                .orderBy(GOODS_SKU.CREATE_TIME.desc(), GOODS_SKU.ID.desc())
-                .page(page);
+                .orderBy(GOODS_SKU.CREATE_TIME.desc(), GOODS_SKU.ID.desc());
+        return mapper.paginateWithRelations(page, queryWrapper);
     }
 
     @Override
@@ -111,6 +109,15 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
     }
 
     @Override
+    public void updateSeckillStatus(List<String> skuIds) {
+        updateChain()
+                .set(GOODS_SKU.SECKILL, CommonColumnEnum.F.name())
+                .set(GOODS_SKU.SECKILL_PRICE, null)
+                .where(GOODS_SKU.ID.in(skuIds))
+                .update();
+    }
+
+    @Override
     public void updateStock(String id, Integer stockChange, StockStatusEnum stockStatus) {
         if (StockStatusEnum.O.equals(stockStatus)) {
             stockChange = -stockChange;
@@ -124,6 +131,7 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
         boolean updateSuccess = updateChain()
                 .where(GOODS_SKU.ID.eq(id))
                 .set(GOODS_SKU.STOCK, GOODS_SKU.STOCK.add(stockChange))
+                .and(GOODS_SKU.STOCK.ge(stockChange))
                 .update();
         if (!updateSuccess) {
             throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_DATA_CHANGED);
@@ -160,6 +168,23 @@ public class GoodsSkuServiceImpl extends CommonServiceImpl<GoodsSkuMapper, Goods
         if (StringUtils.isNotBlank(name)) {
             throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_EXISTED_GOODS_SKU);
         }
+    }
+
+    @Override
+    public boolean updateById(GoodsSku entity) {
+        boolean exists = queryChain().select(number(1))
+                .where(GOODS_SKU.ID.ne(entity.getId()))
+                .and(GOODS_SKU.GOODS_NAME.eq(entity.getGoodsName()))
+                .and(GOODS_SKU.NAME.eq(entity.getName()))
+                .exists();
+        if (exists) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_EXISTED_GOODS_SKU);
+        }
+        boolean success = super.updateById(entity);
+        if (!success) {
+            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_DATA_CHANGED);
+        }
+        return true;
     }
 }
 

@@ -5,8 +5,6 @@ import com.lsh.vivo.enumerate.OrderStatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 /**
  * 订单
  *
@@ -16,7 +14,7 @@ import java.util.List;
 @Data
 public class OrderStatusVO extends BaseRequest {
 
-    private List<String> orderIds;
+    private String orderId;
 
     private OrderStatusEnum status;
 

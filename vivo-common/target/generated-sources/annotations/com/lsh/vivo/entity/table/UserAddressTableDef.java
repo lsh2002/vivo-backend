@@ -46,6 +46,8 @@ public class UserAddressTableDef extends TableDef {
      */
     public final QueryColumn CREATOR = new QueryColumn(this, "creator");
 
+    public final QueryColumn DELETED = new QueryColumn(this, "deleted");
+
     /**
      * 更新人
      */

@@ -3,13 +3,15 @@ package com.lsh.vivo.entity;
 import com.lsh.vivo.annotation.TableIdPrefix;
 import com.lsh.vivo.entity.system.BaseEntity;
 import com.lsh.vivo.listener.CustomFlexListener;
-import com.mybatisflex.annotation.RelationOneToOne;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 订单
@@ -35,11 +37,6 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
     private String userId;
 
     /**
-     * sku id
-     */
-    private String skuId;
-
-    /**
      * 服务类型
      */
     private String serviceType;
@@ -60,14 +57,9 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
     private String receiverAddress;
 
     /**
-     * 商品数量
-     */
-    private Integer num;
-
-    /**
      * 商品单价
      */
-    private Double price;
+    private Double totalPrice;
 
     /**
      * 下单时间
@@ -103,14 +95,19 @@ public class Order extends BaseEntity implements Serializable, Cloneable {
 
     private String requestNo;
 
+    @Column(ignore = true)
+    private Boolean cart;
+
     /**
      * 商品
      */
-    @RelationOneToOne(
-            selfField = "skuId", targetField = "id",
-            joinTargetColumn = "id"
+    @RelationOneToMany(
+            selfField = "id", targetField = "orderId"
     )
-    private GoodsSku goodsSku;
+    private List<OrderItem> orderItems;
+
+    @Column(ignore = true)
+    private String seckillId;
 
     @Override
     public Order clone() {

@@ -40,11 +40,7 @@ public interface CartMpp {
 
     ShoppingCart toDO(CartUpdateVO cartUpdateVO);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsSkuVO toVO(GoodsSku goodsSku);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsVO toVO(Goods goods);
 }

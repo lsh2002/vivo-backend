@@ -1,6 +1,7 @@
 package com.lsh.vivo.mapper.struct;
 
 import com.lsh.vivo.bean.request.goods.seckill.GoodsSeckillSaveVO;
+import com.lsh.vivo.bean.request.goods.seckill.GoodsSeckillStatusVO;
 import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
 import com.lsh.vivo.bean.response.goods.GoodsVO;
 import com.lsh.vivo.bean.response.goods.seckill.GoodsSeckillVO;
@@ -39,12 +40,8 @@ public interface GoodsSeckillMpp {
     @Mapping(target = "endTime", source = "endTime", qualifiedByName = "localDateTimeToLong")
     GoodsSeckillVO toVO(GoodsSeckill GoodsSeckill);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsSkuVO toVO(GoodsSku goodsSku);
 
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToLong")
-    @Mapping(target = "modifierTime", source = "modifierTime", qualifiedByName = "localDateTimeToLong")
     GoodsVO toVO(Goods goods);
 
     /**
@@ -62,4 +59,6 @@ public interface GoodsSeckillMpp {
     @Mapping(target = "startTime", source = "startTime", qualifiedByName = "longToLocalDateTime")
     @Mapping(target = "endTime", source = "endTime", qualifiedByName = "longToLocalDateTime")
     GoodsSeckill toDO(GoodsSeckillSaveVO saveVO);
+
+    GoodsSeckill toDO(GoodsSeckillStatusVO statusVO);
 }

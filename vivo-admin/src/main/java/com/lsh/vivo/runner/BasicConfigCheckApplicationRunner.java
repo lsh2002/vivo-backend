@@ -3,20 +3,18 @@ package com.lsh.vivo.runner;
 import com.lsh.vivo.bean.constant.GlobalConstant;
 import com.lsh.vivo.bean.request.user.UserSaveVO;
 import com.lsh.vivo.bean.response.role.RoleSelectedVO;
-import com.lsh.vivo.entity.Role;
-import com.lsh.vivo.entity.RoleRelation;
-import com.lsh.vivo.entity.User;
+import com.lsh.vivo.entity.*;
 import com.lsh.vivo.enumerate.CommonStatusEnum;
+import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.enumerate.SystemEnum;
 import com.lsh.vivo.mapper.RoleRelationMapper;
 import com.lsh.vivo.mapper.struct.UserMpp;
 import com.lsh.vivo.provider.ApplicationContextProvider;
-import com.lsh.vivo.service.RoleRelationService;
-import com.lsh.vivo.service.RoleService;
-import com.lsh.vivo.service.UserRoleService;
-import com.lsh.vivo.service.UserService;
+import com.lsh.vivo.service.*;
 import com.lsh.vivo.util.OauthContext;
+import com.lsh.vivo.util.RedisUtil;
 import com.mybatisflex.core.query.QueryWrapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.lsh.vivo.entity.table.GoodsSeckillTableDef.GOODS_SECKILL;
+import static com.lsh.vivo.entity.table.GoodsSkuTableDef.GOODS_SKU;
 import static com.lsh.vivo.entity.table.RoleRelationTableDef.ROLE_RELATION;
 import static com.lsh.vivo.entity.table.RoleTableDef.ROLE;
 import static com.lsh.vivo.entity.table.UserRoleTableDef.USER_ROLE;
@@ -48,6 +48,7 @@ import static com.mybatisflex.core.query.QueryMethods.select;
 @Slf4j
 @Order(1)
 @Component
+@RequiredArgsConstructor
 public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
 
     @Value("${project.root.name}")
@@ -55,6 +56,10 @@ public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
 
     @Value("${project.root.pass}")
     private String rootPassword;
+
+    private final GoodsSkuService goodsSkuService;
+    private final GoodsSeckillService goodsSeckillService;
+    private final RedisUtil redisUtil;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -145,6 +150,32 @@ public class BasicConfigCheckApplicationRunner implements ApplicationRunner {
                 user.setPassword(rootPassword);
                 user.setSys(SystemEnum.T.name());
                 userService.save(user);
+            }
+
+            // 查询所有秒杀商品
+            QueryWrapper queryWrapper2 = select()
+                    .where(GOODS_SECKILL.START_TIME.lt(LocalDateTime.now()))
+                    .and(GOODS_SECKILL.END_TIME.gt(LocalDateTime.now()))
+                    .and(GOODS_SECKILL.STATUS.eq(GoodsStatusEnum.U.name()))
+                    .and(GOODS_SECKILL.SECKILL_NUM.gt(0));
+            List<GoodsSeckill> goodsSeckills = goodsSeckillService.list(queryWrapper2);
+            if (CollectionUtils.isNotEmpty(goodsSeckills)) {
+                for (GoodsSeckill goodsSeckill : goodsSeckills) {
+                    if (!redisUtil.hasKey("seckill:" + goodsSeckill.getSkuId() + ":")) {
+                        redisUtil.set("seckill:" + goodsSeckill.getSkuId() + ":", goodsSeckill.getSeckillNum());
+                    }
+                }
+                List<String> skuIds = goodsSeckills.stream().map(GoodsSeckill::getSkuId).toList();
+                QueryWrapper queryWrapper1 = select()
+                        .where(GOODS_SKU.ID.in(skuIds))
+                        .and(GOODS_SKU.STATUS.eq(GoodsStatusEnum.U.name()));
+                List<GoodsSku> goodsSkus = goodsSkuService.list(queryWrapper1);
+                for (GoodsSku goodsSku : goodsSkus) {
+                    if (!redisUtil.hasKey("goodsSku:" + goodsSku.getId() + ":")) {
+                        redisUtil.set("goodsSku:" + goodsSku.getId() + ":", goodsSku.getStock());
+                    }
+                }
+                log.info("秒杀商品缓存成功");
             }
         } catch (Exception e) {
             log.error("", e);

@@ -5,6 +5,8 @@ import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
 import com.mybatisflex.core.paginate.Page;
 
+import java.util.List;
+
 /**
  * @author ASUS
  * @description 针对表【goods_seckill(商品秒杀)】的数据库操作Service
@@ -13,4 +15,7 @@ import com.mybatisflex.core.paginate.Page;
 public interface GoodsSeckillService extends CommonService<GoodsSeckill> {
 
     Page<GoodsSeckill> page(Page<GoodsSeckill> page, String name, GoodsStatusEnum status, Long startTime, Long endTime);
+
+
+    List<String> listFinished();
 }

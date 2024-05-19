@@ -5,31 +5,42 @@ import com.alibaba.fastjson.JSONObject;
 import com.lsh.vivo.bean.dto.order.OrderConditionDTO;
 import com.lsh.vivo.bean.dto.order.OrderDataDTO;
 import com.lsh.vivo.entity.Order;
-import com.lsh.vivo.enumerate.*;
+import com.lsh.vivo.entity.OrderItem;
+import com.lsh.vivo.entity.OrderSeckill;
+import com.lsh.vivo.enumerate.CommonStatusEnum;
+import com.lsh.vivo.enumerate.OrderStatusEnum;
+import com.lsh.vivo.enumerate.ServiceTypeEnum;
+import com.lsh.vivo.enumerate.StockStatusEnum;
 import com.lsh.vivo.event.order.bean.OrderSaveEvent;
-import com.lsh.vivo.exception.BaseRequestErrorException;
 import com.lsh.vivo.mapper.OrderMapper;
-import com.lsh.vivo.service.GoodsSkuService;
-import com.lsh.vivo.service.OrderService;
+import com.lsh.vivo.provider.ApplicationContextProvider;
+import com.lsh.vivo.redis.SeckillKey;
+import com.lsh.vivo.service.*;
 import com.lsh.vivo.service.system.impl.CommonServiceImpl;
 import com.lsh.vivo.util.MapperStructTypeConvert;
+import com.lsh.vivo.util.RedisUtil;
 import com.lsh.vivo.util.Snowflake;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.relation.RelationManager;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static com.lsh.vivo.entity.table.GoodsSeckillTableDef.GOODS_SECKILL;
 import static com.lsh.vivo.entity.table.GoodsSkuTableDef.GOODS_SKU;
+import static com.lsh.vivo.entity.table.OrderItemTableDef.ORDER_ITEM;
 import static com.lsh.vivo.entity.table.OrderTableDef.ORDER;
 import static com.mybatisflex.core.query.QueryMethods.*;
 
@@ -52,6 +63,10 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
     @Resource
     private GoodsSkuService goodsSkuService;
+    @Resource
+    private OrderItemService orderItemService;
+    @Resource
+    private RedisUtil redisUtil;
 
     @Autowired
     public void setSnowflake(Snowflake snowflake) {
@@ -71,36 +86,38 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
     @Override
     public List<Order> listOrder(String userId, String status) {
-        QueryWrapper queryWrapper = select()
+        QueryWrapper queryWrapper = select(ORDER.DEFAULT_COLUMNS)
                 .from(ORDER)
                 .where(ORDER.USER_ID.eq(userId))
                 .and(ORDER.STATUS.eq(status, If::hasText))
                 .and(ORDER.STATUS.ne(OrderStatusEnum.T.name()))
                 .orderBy(ORDER.ORDER_TIME.desc());
+        RelationManager.setMaxDepth(4);
         return mapper.selectListWithRelationsByQuery(queryWrapper);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateStatus(List<String> orderIds, OrderStatusEnum orderStatusEnum, Long time) {
+    public void updateStatus(String orderId, OrderStatusEnum orderStatusEnum, Long time) {
         String status = orderStatusEnum == null ? "" : orderStatusEnum.name();
         updateChain()
                 .set(ORDER.STATUS, status, If::hasText)
                 .set(ORDER.PAY_TIME, mapperStructTypeConvert.longToLocalDateTime(time), OrderStatusEnum.S.name().equals(status))
                 .set(ORDER.CANCEL_TIME, mapperStructTypeConvert.longToLocalDateTime(time), OrderStatusEnum.C.name().equals(status))
                 .set(ORDER.FINISH_TIME, mapperStructTypeConvert.longToLocalDateTime(time), OrderStatusEnum.F.name().equals(status))
-                .where(ORDER.ORDER_ID.in(orderIds))
+                .where(ORDER.ID.eq(orderId))
                 .and(ORDER.STATUS.ne(status, If::hasText))
                 .update();
 
-        List<Order> list = queryChain().select(ORDER.SKU_ID, ORDER.NUM)
-                .where(ORDER.ORDER_ID.in(orderIds))
-                .list();
         if (OrderStatusEnum.F.name().equals(status)) {
-            list.forEach(order -> {
+            List<OrderItem> orderItems = orderItemService.queryChain()
+                    .select(ORDER_ITEM.SKU_ID, ORDER_ITEM.COUNT)
+                    .where(ORDER_ITEM.ORDER_ID.eq(orderId))
+                    .list();
+            orderItems.forEach(orderItem -> {
                 goodsSkuService.updateChain()
-                        .set(GOODS_SKU.SALES, GOODS_SKU.SALES.add(order.getNum()))
-                        .where(GOODS_SKU.ID.eq(order.getSkuId()))
+                        .set(GOODS_SKU.SALES, GOODS_SKU.SALES.add(orderItem.getCount()))
+                        .where(GOODS_SKU.ID.eq(orderItem.getSkuId()))
                         .update();
             });
         }
@@ -119,49 +136,39 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveBatch(Collection<Order> entities, boolean cart, String requestNo) {
-        String userId = entities.stream().map(Order::getUserId).toList().get(0);
-        boolean exists = queryChain()
-                .select(number(1))
-                .where(ORDER.USER_ID.eq(userId))
-                .and(ORDER.REQUEST_NO.eq(requestNo))
-                .limit(1)
-                .exists();
-        if (exists) {
-            throw new BaseRequestErrorException(BaseResultCodeEnum.ERROR_EXISTED_ORDER);
+    public boolean save(Order entity) {
+        List<OrderItem> orderItems = entity.getOrderItems();
+        for (OrderItem orderItem : orderItems) {
+            goodsSkuService.updateStock(orderItem.getSkuId(), orderItem.getCount(), StockStatusEnum.O);
         }
 
-        for (Order entity : entities) {
-            entity.setOrderId(DateTime.now().year() + snowflake.nextIdStr());
-            entity.setStatus(OrderStatusEnum.P.name());
-            goodsSkuService.updateStock(entity.getSkuId(), entity.getNum(), StockStatusEnum.O);
-        }
-        super.saveBatch(entities);
+        entity.setOrderId(DateTime.now().year() + snowflake.nextIdStr());
+        entity.setStatus(OrderStatusEnum.P.name());
+        super.save(entity);
 
-        if (cart) {
-            List<String> skuIds = entities.stream().map(Order::getSkuId).toList();
-            OrderSaveEvent orderSaveEvent = new OrderSaveEvent(this);
-            orderSaveEvent.setSkuIds(skuIds);
-            orderSaveEvent.setUserId(userId);
-            applicationEventPublisher.publishEvent(orderSaveEvent);
-        }
+        OrderSaveEvent orderSaveEvent = new OrderSaveEvent(this);
+        orderSaveEvent.setOrderItems(orderItems);
+        orderSaveEvent.setOrderId(entity.getId());
+        orderSaveEvent.setCart(entity.getCart());
+        applicationEventPublisher.publishEvent(orderSaveEvent);
         return true;
     }
 
     @Override
     public Page<Order> page(Page<Order> page, OrderConditionDTO orderConditionDTO) {
-        return queryChain()
+        QueryWrapper queryWrapper = select()
                 .from(ORDER)
-                .leftJoin(GOODS_SKU).on(ORDER.SKU_ID.eq(GOODS_SKU.ID))
+                .leftJoin(ORDER_ITEM).on(ORDER.ID.eq(ORDER_ITEM.ORDER_ID))
+                .leftJoin(GOODS_SKU).on(ORDER_ITEM.SKU_ID.eq(GOODS_SKU.ID))
                 .where(ORDER.ORDER_ID.likeLeft(orderConditionDTO.getOrderId(), If::hasText))
                 .and(ORDER.STATUS.eq(orderConditionDTO.getStatus(), If::hasText))
                 .and(ORDER.RECEIVER_NAME.like(orderConditionDTO.getReceiverName(), If::hasText))
                 .and(ORDER.RECEIVER_PHONE.like(orderConditionDTO.getReceiverPhone(), If::hasText))
                 .and(ORDER.COURIER_NUMBER.likeLeft(orderConditionDTO.getCourierNumber(), If::hasText))
                 .and(GOODS_SKU.NAME.like(orderConditionDTO.getName(), If::hasText))
-                .and(ORDER.STATUS.ne(CommonStatusEnum.T.name()))
-                .orderBy(ORDER.ORDER_TIME.desc())
-                .page(page);
+                .orderBy(ORDER.ORDER_TIME.desc());
+        RelationManager.setMaxDepth(4);
+        return mapper.paginateWithRelations(page, queryWrapper);
     }
 
     @Override
@@ -192,7 +199,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
         // 今日成交额
         Double gmv = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.ORDER_TIME.between(start, end))
                 .oneAsOpt(Double.class)
@@ -200,7 +207,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         result.put("gmv", gmv);
         // 昨日成交额
         Double ygmv = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.ORDER_TIME.between(start.minusDays(1), end.minusDays(1)))
                 .oneAsOpt(Double.class)
@@ -212,7 +219,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
         // 今日销售额
         Double gms = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.FINISH_TIME.between(start, end))
                 .and(ORDER.STATUS.ne(OrderStatusEnum.C.name()))
@@ -221,7 +228,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         result.put("gms", gms);
         // 昨日销售额
         Double ygms = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.FINISH_TIME.between(start.minusDays(1), end.minusDays(1)))
                 .oneAsOpt(Double.class)
@@ -268,7 +275,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
         // 本月成交额
         Double gmv = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.ORDER_TIME.between(start, end))
                 .oneAsOpt(Double.class)
@@ -276,7 +283,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         result.put("gmv", gmv);
         // 上月成交额
         Double lgmv = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.ORDER_TIME.between(start.minusMonths(1), end.minusMonths(1)))
                 .oneAsOpt(Double.class)
@@ -288,7 +295,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
         // 本月销售额
         Double gms = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.FINISH_TIME.between(start, end))
                 .and(ORDER.STATUS.ne(OrderStatusEnum.C.name()))
@@ -297,7 +304,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         result.put("gms", gms);
         // 上月销售额
         Double lgms = queryChain()
-                .select(sum(ORDER.NUM.multiply(ORDER.PRICE)))
+                .select(sum(ORDER.TOTAL_PRICE))
                 .from(ORDER)
                 .where(ORDER.FINISH_TIME.between(start.minusMonths(1), end.minusMonths(1)))
                 .oneAsOpt(Double.class)
@@ -314,7 +321,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
         JSONObject result = new JSONObject();
         // 获取每个月的销售额
         List<OrderDataDTO> orderDataDTOS1 = queryChain()
-                .select(month(ORDER.FINISH_TIME).as("month"), sum(ORDER.NUM.multiply(ORDER.PRICE)).as("sum"))
+                .select(month(ORDER.FINISH_TIME).as("month"), sum(ORDER.TOTAL_PRICE).as("sum"))
                 .from(ORDER)
                 .where(ORDER.FINISH_TIME.between(LocalDateTime.now().withDayOfYear(1).withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withDayOfYear(LocalDate.now().lengthOfYear()).withHour(23).withMinute(59).withSecond(59)))
                 .and(ORDER.STATUS.eq(OrderStatusEnum.F.name()))
@@ -324,7 +331,7 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
 
         // 获取每个月的成交额
         List<OrderDataDTO> orderDataDTOS2 = queryChain()
-                .select(month(ORDER.ORDER_TIME).as("month"), sum(ORDER.NUM.multiply(ORDER.PRICE)).as("sum"))
+                .select(month(ORDER.ORDER_TIME).as("month"), sum(ORDER.TOTAL_PRICE).as("sum"))
                 .from(ORDER)
                 .where(ORDER.ORDER_TIME.between(LocalDateTime.now().withDayOfYear(1).withHour(0).withMinute(0).withSecond(0), LocalDateTime.now().withDayOfYear(LocalDate.now().lengthOfYear()).withHour(23).withMinute(59).withSecond(59)))
                 .groupBy(ORDER.ORDER_TIME)
@@ -339,14 +346,16 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .where(ORDER.USER_ID.eq(userId))
                 .and(ORDER.SERVICE_TYPE.in(ServiceTypeEnum.listServiceType()))
                 .orderBy(ORDER.SERVICE_TIME.desc());
+        RelationManager.setMaxDepth(4);
         return mapper.selectListWithRelationsByQuery(queryWrapper);
     }
 
     @Override
     public Page<Order> pageAfterSales(Page<Order> page, OrderConditionDTO orderConditionDTO) {
-        return queryChain()
+        QueryWrapper queryWrapper = select()
                 .from(ORDER)
-                .leftJoin(GOODS_SKU).on(ORDER.SKU_ID.eq(GOODS_SKU.ID))
+                .leftJoin(ORDER_ITEM).on(ORDER.ORDER_ID.eq(ORDER_ITEM.ORDER_ID))
+                .leftJoin(GOODS_SKU).on(ORDER_ITEM.SKU_ID.eq(GOODS_SKU.ID))
                 .where(ORDER.ORDER_ID.likeLeft(orderConditionDTO.getOrderId(), If::hasText))
                 .and(ORDER.SERVICE_TYPE.eq(orderConditionDTO.getServiceType(), If::hasText))
                 .and(ORDER.RECEIVER_NAME.like(orderConditionDTO.getReceiverName(), If::hasText))
@@ -355,8 +364,66 @@ public class OrderServiceImpl extends CommonServiceImpl<OrderMapper, Order>
                 .and(GOODS_SKU.NAME.like(orderConditionDTO.getName(), If::hasText))
                 .and(ORDER.STATUS.ne(CommonStatusEnum.T.name()))
                 .and(ORDER.SERVICE_TYPE.in(ServiceTypeEnum.listServiceType()))
-                .orderBy(ORDER.SERVICE_TIME.desc())
-                .page(page);
+                .orderBy(ORDER.SERVICE_TIME.desc());
+        return mapper.paginateWithRelations(page, queryWrapper);
+    }
+
+    @Override
+    public Order seckill(Order order) {
+        // 减秒杀库存
+        GoodsSeckillService goodsSeckillService = ApplicationContextProvider.getBean(GoodsSeckillService.class);
+        boolean update = goodsSeckillService.updateChain()
+                .set(GOODS_SECKILL.SECKILL_NUM, GOODS_SECKILL.SECKILL_NUM.add(-1))
+                .where(GOODS_SECKILL.ID.eq(order.getSeckillId()))
+                .and(GOODS_SECKILL.SECKILL_NUM.gt(0))
+                .update();
+        if (!update) {
+            redisUtil.set(SeckillKey.isGoodsOver + "" + order.getSeckillId(), true, 3600);
+        }
+        // 减库存
+        GoodsSkuService goodsSkuService = ApplicationContextProvider.getBean(GoodsSkuService.class);
+        boolean update1 = goodsSkuService.updateChain()
+                .set(GOODS_SKU.STOCK, GOODS_SKU.STOCK.add(-1))
+                .where(GOODS_SKU.ID.eq(order.getOrderItems().get(0).getSkuId()))
+                .and(GOODS_SKU.STOCK.gt(0))
+                .update();
+        if (!update1) {
+            redisUtil.set(SeckillKey.isGoodsOver + "" + order.getSeckillId(), true, 3600);
+        }
+
+        order.setOrderId(DateTime.now().year() + snowflake.nextIdStr());
+        order.setOrderTime(LocalDateTime.now());
+        order.setStatus(OrderStatusEnum.P.name());
+        // 下订单
+        super.save(order);
+
+        OrderItem orderItem = order.getOrderItems().get(0);
+        orderItem.setUserId(order.getUserId());
+        orderItem.setOrderId(order.getId());
+        orderItemService.save(orderItem);
+
+
+        // 生成秒杀订单
+        OrderSeckillService orderSeckillService = ApplicationContextProvider.getBean(OrderSeckillService.class);
+        OrderSeckill orderSeckill = new OrderSeckill();
+        orderSeckill.setSeckillId(order.getSeckillId());
+        orderSeckill.setOrderId(order.getId());
+        orderSeckill.setUserId(order.getUserId());
+        orderSeckillService.save(orderSeckill);
+
+        return order;
+    }
+
+    @Override
+    public boolean removeByIds(Collection<? extends Serializable> ids) {
+        super.removeByIds(ids);
+        removeOrderItems(ids);
+        return true;
+    }
+
+    @Async("threadPool")
+    protected void removeOrderItems(Collection<? extends Serializable> ids) {
+        orderItemService.remove(ORDER_ITEM.ORDER_ID.in(ids));
     }
 }
 

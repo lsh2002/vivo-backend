@@ -48,7 +48,7 @@ public class OrderController {
     @PreAuthorize("hasAuthority('order:view') || hasAuthority('order:*')")
     @GetMapping("/{id}")
     public OrderVO getById(@NotNull @Valid @PathVariable("id") String id) {
-        Order order = orderService.getById(id);
+        Order order = orderService.getMapper().selectOneWithRelationsById(id);
         return OrderMpp.INSTANCE.toVO(order);
     }
 

@@ -1,8 +1,11 @@
 package com.lsh.vivo.util;
 
+import com.alibaba.fastjson.JSON;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +14,57 @@ import java.util.Map;
  * @since 2023-09-09 15:43
  */
 public class BeanUtil {
+
+    /**
+     * bean 转 String
+     *
+     * @param value
+     * @param <T>
+     * @return
+     */
+    public static <T> String beanToString(T value) {
+        if (value == null) {
+            return null;
+        }
+        Class<?> clazz = value.getClass();
+        if (clazz == int.class || clazz == Integer.class) {
+            return "" + value;
+        } else if (clazz == String.class) {
+            return (String) value;
+        } else if (clazz == long.class || clazz == Long.class) {
+            return "" + value;
+        } else if (clazz == LocalDateTime.class){
+            return "" + value;
+        } else {
+            return JSON.toJSONString(value);
+        }
+    }
+
+
+    /**
+     * string转bean
+     *
+     * @param str
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T stringToBean(String str, Class<T> clazz) {
+        if (str == null || str.length() <= 0 || clazz == null) {
+            return null;
+        }
+        if (clazz == int.class || clazz == Integer.class) {
+            return (T) Integer.valueOf(str);
+        } else if (clazz == String.class) {
+            return (T) str;
+        } else if (clazz == long.class || clazz == Long.class) {
+            return (T) Long.valueOf(str);
+        } else if (clazz == LocalDateTime.class){
+            return (T) LocalDateTime.parse(str);
+        } else {
+            return JSON.toJavaObject(JSON.parseObject(str), clazz);
+        }
+    }
 
     /**
      * 将JavaBean对象封装到Map集合当中

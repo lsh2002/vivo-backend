@@ -7,7 +7,6 @@ import com.lsh.vivo.enumerate.OrderStatusEnum;
 import com.lsh.vivo.service.system.CommonService;
 import com.mybatisflex.core.paginate.Page;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,11 +21,9 @@ public interface OrderService extends CommonService<Order> {
 
     List<Order> listOrder(String userId, String status);
 
-    void updateStatus(List<String> orderIds, OrderStatusEnum orderStatusEnum, Long time);
+    void updateStatus(String orderId, OrderStatusEnum orderStatusEnum, Long time);
 
     int countUnpaid(String userId);
-
-    boolean saveBatch(Collection<Order> entities, boolean cart, String requestNo);
 
     Page<Order> page(Page<Order> page, OrderConditionDTO orderConditionDTO);
 
@@ -39,4 +36,6 @@ public interface OrderService extends CommonService<Order> {
     List<Order> listRefundOrder(String userId);
 
     Page<Order> pageAfterSales(Page<Order> page, OrderConditionDTO orderConditionDTO);
+
+    Order seckill(Order order);
 }

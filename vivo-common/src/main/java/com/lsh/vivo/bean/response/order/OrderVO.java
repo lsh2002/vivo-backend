@@ -1,11 +1,13 @@
 package com.lsh.vivo.bean.response.order;
 
-import com.lsh.vivo.bean.response.goods.GoodsSkuVO;
-import com.lsh.vivo.bean.response.system.BaseEntityVO;
+import com.lsh.vivo.bean.response.orderseckill.OrderItemVO;
+import com.lsh.vivo.bean.response.system.BaseUpdateVO;
 import com.lsh.vivo.enumerate.OrderStatusEnum;
 import com.lsh.vivo.enumerate.ServiceTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * 订单
@@ -14,7 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class OrderVO extends BaseEntityVO {
+public class OrderVO extends BaseUpdateVO {
     /**
      * 订单号
      */
@@ -24,11 +26,6 @@ public class OrderVO extends BaseEntityVO {
      * 用户id
      */
     private String userId;
-
-    /**
-     * sku id
-     */
-    private String skuId;
 
     /**
      * sku id
@@ -51,14 +48,9 @@ public class OrderVO extends BaseEntityVO {
     private String receiverAddress;
 
     /**
-     * 商品数量
-     */
-    private Integer num;
-
-    /**
      * 商品单价
      */
-    private Double price;
+    private Double totalPrice;
 
     /**
      * 下单时间
@@ -92,7 +84,9 @@ public class OrderVO extends BaseEntityVO {
      */
     private String courierNumber;
 
-    private GoodsSkuVO goodsSku;
-
     private OrderStatusEnum status;
+
+    private List<OrderItemVO> orderItems;
+
+    private String seckillId;
 }

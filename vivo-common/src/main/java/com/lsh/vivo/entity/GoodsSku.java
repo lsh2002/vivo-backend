@@ -105,7 +105,7 @@ public class GoodsSku extends BaseEntity implements Serializable {
     @RelationOneToOne(
             selfField = "id", targetField = "skuId",
             joinTargetColumn = "sku_id",
-            selectColumns = {"start_time", "end_time"}
+            selectColumns = {"id, start_time", "end_time"}
     )
     private GoodsSeckill goodsSeckill;
 

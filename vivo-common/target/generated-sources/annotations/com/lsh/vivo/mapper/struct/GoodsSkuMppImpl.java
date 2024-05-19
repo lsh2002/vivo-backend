@@ -16,6 +16,7 @@ import com.lsh.vivo.bean.response.system.PageVO;
 import com.lsh.vivo.entity.Goods;
 import com.lsh.vivo.entity.GoodsCategory;
 import com.lsh.vivo.entity.GoodsPicture;
+import com.lsh.vivo.entity.GoodsSeckill;
 import com.lsh.vivo.entity.GoodsSku;
 import com.lsh.vivo.enumerate.CommonColumnEnum;
 import com.lsh.vivo.enumerate.GoodsCatLevelEnum;
@@ -23,13 +24,14 @@ import com.lsh.vivo.enumerate.GoodsPictureEnum;
 import com.lsh.vivo.enumerate.GoodsStatusEnum;
 import com.lsh.vivo.util.MapperStructTypeConvert;
 import com.mybatisflex.core.paginate.Page;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-04T14:04:56+0800",
+    date = "2024-05-18T01:12:39+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 public class GoodsSkuMppImpl implements GoodsSkuMpp {
@@ -44,15 +46,11 @@ public class GoodsSkuMppImpl implements GoodsSkuMpp {
 
         GoodsSkuVO goodsSkuVO = new GoodsSkuVO();
 
-        goodsSkuVO.setGoods( goodsToGoodsVO( goodsSku.getGoods() ) );
-        goodsSkuVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( goodsSku.getCreateTime() ) );
-        goodsSkuVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( goodsSku.getModifierTime() ) );
+        goodsSkuVO.setStartTime( mapperStructTypeConvert.localDateTimeToLong( goodsSkuGoodsSeckillStartTime( goodsSku ) ) );
+        goodsSkuVO.setEndTime( mapperStructTypeConvert.localDateTimeToLong( goodsSkuGoodsSeckillEndTime( goodsSku ) ) );
+        goodsSkuVO.setSeckillId( goodsSkuGoodsSeckillId( goodsSku ) );
         goodsSkuVO.setId( goodsSku.getId() );
         goodsSkuVO.setRevision( goodsSku.getRevision() );
-        goodsSkuVO.setCreatorId( goodsSku.getCreatorId() );
-        goodsSkuVO.setCreator( goodsSku.getCreator() );
-        goodsSkuVO.setModifierId( goodsSku.getModifierId() );
-        goodsSkuVO.setModifier( goodsSku.getModifier() );
         goodsSkuVO.setName( goodsSku.getName() );
         goodsSkuVO.setGoodsId( goodsSku.getGoodsId() );
         goodsSkuVO.setGoodsName( goodsSku.getGoodsName() );
@@ -72,6 +70,7 @@ public class GoodsSkuMppImpl implements GoodsSkuMpp {
             goodsSkuVO.setSeckillPrice( Double.parseDouble( goodsSku.getSeckillPrice() ) );
         }
         goodsSkuVO.setGoodsPictures( goodsPictureListToGoodsPictureVOList( goodsSku.getGoodsPictures() ) );
+        goodsSkuVO.setGoods( goodsToGoodsVO( goodsSku.getGoods() ) );
 
         return goodsSkuVO;
     }
@@ -253,30 +252,49 @@ public class GoodsSkuMppImpl implements GoodsSkuMpp {
         return list;
     }
 
-    protected GoodsVO goodsToGoodsVO(Goods goods) {
-        if ( goods == null ) {
+    private LocalDateTime goodsSkuGoodsSeckillStartTime(GoodsSku goodsSku) {
+        if ( goodsSku == null ) {
             return null;
         }
-
-        GoodsVO goodsVO = new GoodsVO();
-
-        goodsVO.setCreateTime( mapperStructTypeConvert.localDateTimeToLong( goods.getCreateTime() ) );
-        goodsVO.setModifierTime( mapperStructTypeConvert.localDateTimeToLong( goods.getModifierTime() ) );
-        goodsVO.setId( goods.getId() );
-        goodsVO.setRevision( goods.getRevision() );
-        goodsVO.setCreatorId( goods.getCreatorId() );
-        goodsVO.setCreator( goods.getCreator() );
-        goodsVO.setModifierId( goods.getModifierId() );
-        goodsVO.setModifier( goods.getModifier() );
-        goodsVO.setName( goods.getName() );
-        goodsVO.setCategoryId( goods.getCategoryId() );
-        goodsVO.setCategory( goods.getCategory() );
-        goodsVO.setDescription( goods.getDescription() );
-        if ( goods.getStatus() != null ) {
-            goodsVO.setStatus( Enum.valueOf( GoodsStatusEnum.class, goods.getStatus() ) );
+        GoodsSeckill goodsSeckill = goodsSku.getGoodsSeckill();
+        if ( goodsSeckill == null ) {
+            return null;
         }
+        LocalDateTime startTime = goodsSeckill.getStartTime();
+        if ( startTime == null ) {
+            return null;
+        }
+        return startTime;
+    }
 
-        return goodsVO;
+    private LocalDateTime goodsSkuGoodsSeckillEndTime(GoodsSku goodsSku) {
+        if ( goodsSku == null ) {
+            return null;
+        }
+        GoodsSeckill goodsSeckill = goodsSku.getGoodsSeckill();
+        if ( goodsSeckill == null ) {
+            return null;
+        }
+        LocalDateTime endTime = goodsSeckill.getEndTime();
+        if ( endTime == null ) {
+            return null;
+        }
+        return endTime;
+    }
+
+    private String goodsSkuGoodsSeckillId(GoodsSku goodsSku) {
+        if ( goodsSku == null ) {
+            return null;
+        }
+        GoodsSeckill goodsSeckill = goodsSku.getGoodsSeckill();
+        if ( goodsSeckill == null ) {
+            return null;
+        }
+        String id = goodsSeckill.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
     }
 
     protected GoodsPictureVO goodsPictureToGoodsPictureVO(GoodsPicture goodsPicture) {
@@ -306,6 +324,26 @@ public class GoodsSkuMppImpl implements GoodsSkuMpp {
         }
 
         return list1;
+    }
+
+    protected GoodsVO goodsToGoodsVO(Goods goods) {
+        if ( goods == null ) {
+            return null;
+        }
+
+        GoodsVO goodsVO = new GoodsVO();
+
+        goodsVO.setId( goods.getId() );
+        goodsVO.setRevision( goods.getRevision() );
+        goodsVO.setName( goods.getName() );
+        goodsVO.setCategoryId( goods.getCategoryId() );
+        goodsVO.setCategory( goods.getCategory() );
+        goodsVO.setDescription( goods.getDescription() );
+        if ( goods.getStatus() != null ) {
+            goodsVO.setStatus( Enum.valueOf( GoodsStatusEnum.class, goods.getStatus() ) );
+        }
+
+        return goodsVO;
     }
 
     protected PageResult goodsSkuPageToPageResult(Page<GoodsSku> page) {
